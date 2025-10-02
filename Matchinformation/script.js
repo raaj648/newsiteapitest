@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const descEl = document.getElementById("match-description");
   const countdownEl = document.getElementById("countdown-section");
   const streamsContainer = document.getElementById("streams-container");
-  const pageTitle = document.getElementById("page-title");
+  const pageTitle = document.getElementById("page-title"); // fix #1
 
   if (!matchId) {
     titleEl.textContent = "Match not found";
@@ -14,42 +14,43 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    // Fetch all matches to find this one
     const res = await fetch("https://streamed.pk/api/matches/all");
     const matches = await res.json();
-    const match = matches.find(m => m.id === matchId);
+
+    // ensure string comparison
+    const match = matches.find(m => String(m.id) === String(matchId));
 
     if (!match) {
       titleEl.textContent = "Match not found";
       return;
     }
 
-    // Update title and description
+    // Update title + tab
     titleEl.textContent = `${match.title} Live Stream Links`;
-    pageTitle.textContent = `${match.title} Live Stream Links`;
-    descEl.textContent = `To watch ${match.title} streams, scroll down and choose a stream link of your choice. If there are no links or buttons, please wait for the timer to countdown until the event is live.`;
+    if (pageTitle) pageTitle.textContent = `${match.title} Live Stream Links`;
+    descEl.textContent = `To watch ${match.title} streams, scroll down and choose a stream link.`;
 
-    // Handle countdown
-    const now = Date.now();
-    if (match.date > now) {
+    // Countdown
+    const matchDate = Number(match.date);
+    if (matchDate > Date.now()) {
       countdownEl.classList.remove("hidden");
       const updateCountdown = () => {
-        const diff = match.date - Date.now();
+        const diff = matchDate - Date.now();
         if (diff <= 0) {
           countdownEl.classList.add("hidden");
           clearInterval(interval);
           return;
         }
-        const hrs = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
-        const mins = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, "0");
-        const secs = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, "0");
+        const hrs = String(Math.floor(diff / 3600000)).padStart(2, "0");
+        const mins = String(Math.floor((diff % 3600000) / 60000)).padStart(2, "0");
+        const secs = String(Math.floor((diff % 60000) / 1000)).padStart(2, "0");
         countdownEl.textContent = `The event starts in ${hrs}:${mins}:${secs}`;
       };
       updateCountdown();
       const interval = setInterval(updateCountdown, 1000);
     }
 
-    // Load streams
+    // Streams
     if (match.sources && match.sources.length > 0) {
       for (const source of match.sources) {
         try {
@@ -58,17 +59,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
           const sourceDiv = document.createElement("div");
           sourceDiv.className = "stream-source";
-          sourceDiv.innerHTML = `
-            <h3>${source.source.toUpperCase()}</h3>
-            <small>${streams.length} stream${streams.length > 1 ? "s" : ""}</small>
-          `;
+          sourceDiv.innerHTML = `<h3>${source.source.toUpperCase()}</h3>`;
 
           streams.forEach(stream => {
             const item = document.createElement("div");
             item.className = "stream-item";
             item.innerHTML = `
               <strong>Stream ${stream.streamNo}</strong> 
-              ${stream.hd ? "HD" : "SD"} • ${stream.language} 
+              ${stream.hd ? "HD" : "SD"} • ${stream.language}
               <br>
               <iframe src="${stream.embedUrl}" width="100%" height="400" frameborder="0" allowfullscreen></iframe>
             `;
@@ -83,6 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
       streamsContainer.innerHTML = "<p>No streams available yet.</p>";
     }
+
   } catch (e) {
     console.error("Error loading match information", e);
     titleEl.textContent = "Error loading match information";
