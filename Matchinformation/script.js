@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (pageTitle) pageTitle.innerText = `${match.title} Live Stream Links`;
 document.title = `${match.title} Live Stream Links`; // updates browser tab
 
-    descEl.textContent = `Choose a source below to watch ${match.title}.`;
+    descEl.textContent = `Scroll down and choose a stream link below to watch ${match.title}. live stream. If there is no links or buttons, please wait for the timer to countdown until the event is live.`;
 
     // Countdown
     const matchDate = Number(match.date);
@@ -164,5 +164,6 @@ if (match.sources && match.sources.length > 0) {
     window.history.back();
   });
 });
+
 
 
