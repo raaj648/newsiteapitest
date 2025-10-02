@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         item.appendChild(badgeEl);
 
         item.addEventListener("click", () => {
-          window.location.href = `Matchinformation/index.html?id=${match.id}`;
+          window.location.href = `../Matchinformation/index.html?id=${match.id}`;
         });
 
         overlayResults.appendChild(item);
@@ -335,4 +335,5 @@ if (sdStreams.length > 0) {
     });
   }
 });
+
 
