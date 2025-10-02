@@ -1,0 +1,472 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f7fb;
+  color: #222;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+h1 {
+  font-size: 28px;
+  color: #1a73e8;
+}
+
+/* Desktop Container Padding */
+@media (min-width: 1024px) {
+  .fullpage {
+    padding-left: 6rem;
+    padding-right: 6rem;
+  }
+}
+
+/* Section Header with Pagination */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0;
+}
+
+.section-header h2 {
+  font-size: 20px;
+  color: #444;
+}
+
+.pagination-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.pagination-buttons button {
+  border: none;
+  background: #1a73e8;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.pagination-buttons button:hover {
+  background: #0d47a1;
+}
+
+/* Matches Container - Horizontal Scroll (Netflix style) */
+.matches-container {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 28px;
+  padding: 15px 0;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.matches-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Match Card */
+.match-card {
+  flex: 0 0 200px;  /* base width */
+  max-width: 200px;
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.match-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Poster Image */
+.match-poster {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  background: #ddd;
+  display: block;
+}
+
+/* Status Badge */
+.status-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #e63946;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  animation: pulse 1.2s infinite;
+}
+
+.status-badge.date {
+  background: rgba(0,0,0,0.7);
+  animation: none;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+/* Info Section */
+.match-info {
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Title with ellipsis */
+.match-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #111;
+
+  height: 40px;             /* consistent height */
+  line-height: 20px;
+  overflow: hidden;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+}
+
+/* Meta Row */
+.match-meta-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #555;
+  border-top: 1px solid #eee;
+  padding-top: 6px;
+}
+
+.match-category {
+  text-transform: capitalize;
+}
+
+/* Categories Container */
+.categories-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 15px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 10px 0;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.categories-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Category Card */
+.category-card {
+  flex: 0 0 140px;
+  height: 100px;
+  border-radius: 10px;
+  border: 2px solid #1a73e8;
+  background: transparent;
+  color: #1a73e8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.category-card:hover {
+  background: #1a73e8;
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+@media (max-width: 480px) {
+  .category-card {
+    flex: 0 0 100px;
+    font-size: 14px;
+    height: 80px;
+  }
+}
+
+/* -------------------
+   RESPONSIVENESS
+------------------- */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .match-card {
+    flex: 0 0 180px;
+    max-width: 180px;
+  }
+  .match-poster {
+    height: 110px;
+  }
+}
+
+/* Large Phones / Small Tablets */
+@media (max-width: 768px) {
+  body {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  .section-header h2 {
+    font-size: 18px;
+  }
+
+  .match-card {
+    flex: 0 0 45%;   /* 2 cards per row look */
+    max-width: 100%;
+  }
+
+  .match-poster {
+    height: 100px;
+  }
+
+  .match-title {
+    font-size: 13px;
+    height: 36px;
+    line-height: 18px;
+  }
+}
+
+/* Small Phones */
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  .section-header h2 {
+    font-size: 16px;
+  }
+
+  .match-card {
+    flex: 0 0 90%;   /* single card full width */
+    max-width: 100%;
+  }
+
+  .match-poster {
+    height: 90px;
+  }
+
+  .match-title {
+    font-size: 12px;
+    height: 32px;
+    line-height: 16px;
+  }
+}
+
+/* Search Container */
+.search-container {
+  position: relative;
+  margin: 20px auto;
+  max-width: 650px;
+  width: 95%;
+}
+
+/* Input */
+#search-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  border: 2px solid #1a73e8;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+#search-input:focus {
+  border-color: #0b57d0;
+  box-shadow: 0 0 6px rgba(26,115,232,0.3);
+}
+
+
+
+/* Search result thumbnail */
+.search-result-thumb {
+  width: 96px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+/* Make sure search result items keep layout like match cards */
+.search-result-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 6px 6px;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.search-result-info { flex: 1; display:flex; flex-direction: column; gap:6px; }
+
+.search-result-title { font-weight:600; font-size:15px; color:#222; line-height:1.2; text-align:left! important; }
+.search-result-meta { display:flex; gap:8px; color:#666; font-size:13px; align-items:center; }
+.search-result-category { text-transform:capitalize; padding: 2px 8px; background:#eef6ff; border-radius:6px; color:#1a73e8; font-weight:600; }
+.search-result-time { color:#888; font-size:13px; }
+
+
+/* Search Overlay */
+#search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;   /* hidden by default */
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 60px;
+  z-index: 9999;
+}
+
+.search-overlay-content {
+  background: #f4f7fb;
+  width: 95%;
+  max-width: 700px;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+#search-overlay input {
+  width: 100%;
+  padding: 14px 18px;
+  font-size: 16px;
+  border: 2px solid #1a73e8;
+  border-radius: 10px;
+  outline: none;
+  margin-bottom: 20px;
+}
+
+#search-overlay input:focus {
+  border-color: #0b57d0;
+  box-shadow: 0 0 8px rgba(26,115,232,0.3);
+}
+
+/* Close Button */
+#search-close {
+  position: absolute;
+  top: 1px;
+  right: 6px;
+  font-size: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: red;
+}
+
+/* Search Results */
+#overlay-search-results {
+  max-height: 70vh;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+}
+
+#overlay-search-results .search-result-item {
+  flex: 0 0 200px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+#overlay-search-results .search-result-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+#overlay-search-results .search-result-thumb {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  background: #ddd;
+}
+
+#overlay-search-results .search-result-info {
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#overlay-search-results .search-result-title {
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 20px;
+  height: 40px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+#overlay-search-results .search-result-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #555;
+  margin-top: 6px;
+}
+
+#overlay-search-results .status-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 6px;
+  color: #fff;
+  animation: pulse 1.2s infinite;
+  z-index: 2;
+}

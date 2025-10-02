@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Streamed Matches</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="fullpage">
+  <header>
+    <h1>📺 Streamed Matches</h1>
+	
+	 <div class="search-container">
+    <input type="text" id="search-input" placeholder="Search matches..." autocomplete="off">
+    
+  </div>
+	
+	
+  </header>
+  
+   <!-- Categories Section -->
+  <section id="categories-section">
+    <div class="section-header">
+      <h2>🏆 Categories</h2>
+      <div class="pagination-buttons">
+        <button id="cat-left">←</button>
+        <button id="cat-right">→</button>
+      </div>
+    </div>
+    <div class="categories-container" id="categories-container">
+      <!-- Category cards injected dynamically -->
+    </div>
+  </section>
+  
+  
+
+  <main id="matches-sections">
+    <!-- Sections will be injected dynamically by JS -->
+  </main>
+  </div>
+  
+  <!-- Search Overlay -->
+<div id="search-overlay">
+  <div class="search-overlay-content">
+    <button id="search-close">&times;</button>
+    <input type="text" id="overlay-search-input" placeholder="Search matches..." autocomplete="off">
+    <div id="overlay-search-results"></div>
+  </div>
+</div>
+
+
+  <script src="script.js"></script>
+</body>
+</html>
