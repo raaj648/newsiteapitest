@@ -359,7 +359,7 @@ function createMatchCard(match) {
   card.appendChild(info);
 
   card.addEventListener("click", () => {
-    window.location.href = `match-details.html?id=${match.id}`;
+    window.location.href = `https://raaj648.github.io/newsiteapitest/Matchinformation/?id=${match.id}`;
   });
 
   return card;
@@ -446,6 +446,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadCategories();          // 👈 Load category section first
   categories.forEach(loadCategory); // then load match sections
 });
+
 
 
 
