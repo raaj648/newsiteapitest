@@ -103,45 +103,74 @@ if (match.sources && match.sources.length > 0) {
         || "Reliable streams (Auto-selected quality)";
       sourceBox.appendChild(miniDesc);
 
-      // HD Streams
-      if (hdStreams.length > 0) {
-        const hdTitle = document.createElement("h4");
-        hdTitle.textContent = "HD Streams";
-        sourceBox.appendChild(hdTitle);
+// HD Streams
+if (hdStreams.length > 0) {
+  const hdTitle = document.createElement("h4");
+  hdTitle.textContent = "HD Streams";
+  sourceBox.appendChild(hdTitle);
 
-        hdStreams.forEach((stream, idx) => {
-          const row = document.createElement("div");
-          row.className = "stream-row";
-          row.innerHTML = `
-            <span>HD Stream ${idx + 1}</span>
-            <span class="stream-lang">${stream.language || "Unknown"}</span>
-          `;
-          row.addEventListener("click", () => {
-            window.location.href = `Watchnow/index.html?url=${encodeURIComponent(stream.embedUrl)}`;
-          });
-          sourceBox.appendChild(row);
-        });
-      }
+  hdStreams.forEach((stream, idx) => {
+    const row = document.createElement("div");
+    row.className = "stream-row";
+    row.innerHTML = `
+      <span>HD Stream ${idx + 1}</span>
+      <span class="stream-lang">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon lucide-globe">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+          <path d="M2 12h20"></path>
+        </svg>
+        ${stream.language || "Unknown"}
+      </span>
+      <span class="open-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+      </span>
+    `;
+    row.addEventListener("click", () => {
+      window.location.href = `Watchnow/index.html?url=${encodeURIComponent(stream.embedUrl)}`;
+    });
+    sourceBox.appendChild(row);
+  });
+}
 
-      // SD Streams
-      if (sdStreams.length > 0) {
-        const sdTitle = document.createElement("h4");
-        sdTitle.textContent = "SD Streams";
-        sourceBox.appendChild(sdTitle);
+// SD Streams
+if (sdStreams.length > 0) {
+  const sdTitle = document.createElement("h4");
+  sdTitle.textContent = "SD Streams";
+  sourceBox.appendChild(sdTitle);
 
-        sdStreams.forEach((stream, idx) => {
-          const row = document.createElement("div");
-          row.className = "stream-row";
-          row.innerHTML = `
-            <span>SD Stream ${idx + 1}</span>
-            <span class="stream-lang">${stream.language || "Unknown"}</span>
-          `;
-          row.addEventListener("click", () => {
-            window.location.href = `Watchnow/index.html?url=${encodeURIComponent(stream.embedUrl)}`;
-          });
-          sourceBox.appendChild(row);
-        });
-      }
+  sdStreams.forEach((stream, idx) => {
+    const row = document.createElement("div");
+    row.className = "stream-row";
+    row.innerHTML = `
+      <span>SD Stream ${idx + 1}</span>
+      <span class="stream-lang">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon lucide-globe">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+          <path d="M2 12h20"></path>
+        </svg>
+        ${stream.language || "Unknown"}
+      </span>
+      <span class="open-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+      </span>
+    `;
+    row.addEventListener("click", () => {
+      window.location.href = `Watchnow/index.html?url=${encodeURIComponent(stream.embedUrl)}`;
+    });
+    sourceBox.appendChild(row);
+  });
+}
+
 
       streamsContainer.appendChild(sourceBox);
 
@@ -164,6 +193,7 @@ if (match.sources && match.sources.length > 0) {
     window.history.back();
   });
 });
+
 
 
 
