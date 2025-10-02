@@ -161,6 +161,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         overlayResults.appendChild(item);
       });
     });
+	// Handle Enter/Go button
+overlayInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    const q = overlayInput.value.trim();
+    if (q) {
+      // Go to SearchResult page
+      window.location.href = `/newsiteapitest/SearchResult/index.html?q=${encodeURIComponent(q)}`;
+    }
+  }
+});
+
   }
 
   // 📄 Match Information Page
@@ -335,5 +346,6 @@ if (sdStreams.length > 0) {
     });
   }
 });
+
 
 
