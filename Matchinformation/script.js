@@ -230,25 +230,53 @@ overlayInput.addEventListener("keydown", (e) => {
     // Streams Section
     if (streamsContainer) streamsContainer.innerHTML = "";
 
-    if (match.sources && match.sources.length > 0) {
-      for (const source of match.sources) {
-        try {
-          const streamRes = await fetch(`https://streamed.pk/api/stream/${source.source}/${source.id}`);
-          const streams = await streamRes.json();
+    // Custom meta descriptions
+const sourceMeta = {
+  alpha: "Most reliable (720p 30fps)",
+  charlie: "Good backup (poor quality occasionally)",
+  intel: "Large event coverage, iffy quality",
+  admin: "Admin added streams",
+  hotel: "Very high quality feeds & many backups",
+  foxtrot: "Good quality, offers home/away feeds",
+  delta: "Okayish backup (can lag/not load)",
+  echo: "Great quality overall"
+};
 
-          const hdStreams = streams.filter(s => s.hd);
-          const sdStreams = streams.filter(s => !s.hd);
+if (match.sources && match.sources.length > 0) {
+  const totalSources = match.sources.length;
 
-          const sourceBox = document.createElement("div");
-          sourceBox.className = "stream-source";
+  // Show header count
+  const header = document.createElement("div");
+  header.className = "sources-header";
+  header.textContent = `Showing top quality sources • ${totalSources} of ${totalSources} sources`;
+  streamsContainer.appendChild(header);
 
-          const headerRow = document.createElement("div");
-          headerRow.className = "source-header";
-          headerRow.innerHTML = `
-            <span class="source-name">${source.source.toUpperCase()}</span>
-            <span class="source-count">${streams.length} streams</span>
-          `;
-          sourceBox.appendChild(headerRow);
+  for (const source of match.sources) {
+    try {
+      const streamRes = await fetch(`https://streamed.pk/api/stream/${source.source}/${source.id}`);
+      const streams = await streamRes.json();
+
+      const hdStreams = streams.filter(s => s.hd);
+      const sdStreams = streams.filter(s => !s.hd);
+
+      const sourceBox = document.createElement("div");
+      sourceBox.className = "stream-source";
+
+      // Source header
+      const headerRow = document.createElement("div");
+      headerRow.className = "source-header";
+      headerRow.innerHTML = `
+        <span class="source-name">${source.source.toUpperCase()}</span>
+        <span class="source-count">${streams.length} streams</span>
+      `;
+      sourceBox.appendChild(headerRow);
+
+      // Custom description (fallback if not in dictionary)
+      const miniDesc = document.createElement("small");
+      miniDesc.className = "source-desc";
+      miniDesc.textContent = sourceMeta[source.source.toLowerCase()] 
+        || "Reliable streams (Auto-selected quality)";
+      sourceBox.appendChild(miniDesc);
 
         // HD Streams
 if (hdStreams.length > 0) {
@@ -353,6 +381,7 @@ if (sdStreams.length > 0) {
     });
   }
 });
+
 
 
 
