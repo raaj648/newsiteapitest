@@ -312,10 +312,10 @@ flex: 0 0 130px! important;
 /* Input */
 #search-input {
   width: 100%;
-  padding: 12px 16px;
-  font-size: 15px;
-  border: 2px solid #1a73e8;
-  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 14px;
+  border: 1px solid #1a73e8;
+  border-radius: 5px;
   outline: none;
   transition: all 0.2s ease;
 }
@@ -620,6 +620,7 @@ flex: 0 0 130px! important;
 .fa-telegram {
 	margin-left: 10px;
 }
+
 
 
 
