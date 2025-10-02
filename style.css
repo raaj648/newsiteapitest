@@ -253,7 +253,7 @@ h1 {
   }
 
   .match-poster {
-    height: 100px;
+    height: auto;
   }
 
   .match-title {
@@ -283,7 +283,7 @@ h1 {
   }
 
   .match-poster {
-    height: 90px;
+    height: auto;
   }
 
   .match-title {
@@ -470,4 +470,5 @@ h1 {
   animation: pulse 1.2s infinite;
   z-index: 2;
 }
+
 
