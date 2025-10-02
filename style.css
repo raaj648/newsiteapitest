@@ -230,7 +230,7 @@ gap: 10px;
 @media (max-width: 1024px) {
   .match-card {
     flex: 0 0 195px;
-    max-width: 195px;
+    max-width: 187px;
   }
   .match-poster {
     height: auto;
@@ -474,6 +474,7 @@ gap: 10px;
   animation: pulse 1.2s infinite;
   z-index: 2;
 }
+
 
 
 
