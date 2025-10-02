@@ -216,6 +216,10 @@ h1 {
     font-size: 14px;
     height: 80px;
   }
+  .matches-container {
+gap: 10px;
+    
+  }
 }
 
 /* -------------------
@@ -279,7 +283,7 @@ h1 {
 
   .match-card {
     flex: 0 0 90%;   /* single card full width */
-    max-width: 170px;
+    max-width: 175px;
   }
 
   .match-poster {
@@ -470,6 +474,7 @@ h1 {
   animation: pulse 1.2s infinite;
   z-index: 2;
 }
+
 
 
 
