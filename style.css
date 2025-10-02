@@ -589,6 +589,34 @@ flex: 0 0 130px! important;
   z-index: 9999;
 }
 
+/* Home Icon */
+.home-icon i {
+  font-size: 22px;
+  color: #1a73e8;
+  transition: color 0.2s;
+}
+.home-icon i:hover {
+  color: #0b57d0;
+}
+
+/* Social Icons */
+.social-icon i {
+  font-size: 22px;
+  transition: color 0.2s;
+}
+.social-icon.telegram i {
+  color: #0088cc; /* Telegram blue */
+}
+.social-icon.telegram i:hover {
+  color: #006699;
+}
+.social-icon.discord i {
+  color: #5865F2; /* Discord purple */
+}
+.social-icon.discord i:hover {
+  color: #404EED;
+}
+
 
 
 
