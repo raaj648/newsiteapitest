@@ -37,13 +37,31 @@ async function fetchAllMatches() {
   }
 }
 
-// Search function
-function searchMatches(query) {
-  if (!query || !allMatchesCache.length) return [];
-  query = query.toLowerCase();
-  return allMatchesCache.filter(match =>
-    match.title?.toLowerCase().includes(query)
-  );
+// Helpers (copied from homepage)
+function buildPosterUrl(match) {
+  const placeholder = "https://methstreams.world/mysite.jpg";
+  if (match.teams?.home?.badge && match.teams?.away?.badge) {
+    return `https://streamed.pk/api/images/poster/${match.teams.home.badge}/${match.teams.away.badge}.webp`;
+  }
+  if (match.poster) {
+    const p = String(match.poster || "").trim();
+    if (p.startsWith("http://") || p.startsWith("https://") || p.startsWith("//")) return p;
+    if (p.startsWith("/")) return `https://streamed.pk${p}.webp`;
+    return `https://streamed.pk/api/images/proxy/${p}.webp`;
+  }
+  return placeholder;
+}
+function formatMatchBadge(match) {
+  const date = new Date(match.date);
+  const now = new Date();
+  const isToday = date.toDateString() === now.toDateString();
+  if (date.getTime() <= now.getTime()) {
+    return { badge: "LIVE", badgeType: "live", meta: date.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}) };
+  }
+  if (isToday) {
+    return { badge: date.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}), badgeType:"date", meta:"Today" };
+  }
+  return { badge: date.toLocaleDateString("en-US",{month:"short",day:"numeric"}), badgeType:"date", meta: date.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}) };
 }
 
 // ---------------------------
@@ -54,45 +72,98 @@ document.addEventListener("DOMContentLoaded", async () => {
   await fetchAllMatches();
 
   const searchInput = document.getElementById("search-input");
-  const overlay = document.getElementById("search-overlay");
+  const searchOverlay = document.getElementById("search-overlay");
   const overlayInput = document.getElementById("overlay-search-input");
   const overlayResults = document.getElementById("overlay-search-results");
-  const closeBtn = document.getElementById("search-close");
+  const searchClose = document.getElementById("search-close");
 
-  if (searchInput && overlay && overlayInput && overlayResults && closeBtn) {
+  if (searchInput && searchOverlay && overlayInput && overlayResults && searchClose) {
+    // Open overlay
     searchInput.addEventListener("focus", () => {
-      overlay.style.display = "block";
+      searchOverlay.style.display = "flex";
+      overlayInput.value = searchInput.value;
       overlayInput.focus();
-    });
-
-    closeBtn.addEventListener("click", () => {
-      overlay.style.display = "none";
-      overlayInput.value = "";
       overlayResults.innerHTML = "";
     });
 
-    overlayInput.addEventListener("input", () => {
-      const results = searchMatches(overlayInput.value);
-      overlayResults.innerHTML = "";
-
-      if (results.length === 0) {
-        overlayResults.innerHTML = "<p>No matches found.</p>";
-        return;
+    // Close overlay
+    searchClose.addEventListener("click", () => {
+      searchOverlay.style.display = "none";
+    });
+    searchOverlay.addEventListener("click", (e) => {
+      if (!e.target.closest(".search-overlay-content")) {
+        searchOverlay.style.display = "none";
       }
+    });
 
-      results.forEach(match => {
-        const div = document.createElement("div");
-        div.classList.add("search-result-item");
-        div.textContent = match.title;
-        div.addEventListener("click", () => {
+    // Search typing
+    overlayInput.addEventListener("input", function () {
+      const q = this.value.trim().toLowerCase();
+      overlayResults.innerHTML = "";
+      if (!q) return;
+
+      const filtered = allMatchesCache.filter(match => {
+        const title = (match.title || "").toLowerCase();
+        const category = (match.category || "").toLowerCase();
+        const league = (match.league || "").toLowerCase();
+        const home = (match.teams?.home?.name || "").toLowerCase();
+        const away = (match.teams?.away?.name || "").toLowerCase();
+        return title.includes(q) || category.includes(q) || league.includes(q) || home.includes(q) || away.includes(q);
+      });
+
+      filtered.slice(0, 8).forEach(match => {
+        const item = document.createElement("div");
+        item.className = "search-result-item";
+
+        const img = document.createElement("img");
+        img.className = "search-result-thumb";
+        img.src = buildPosterUrl(match);
+        img.alt = match.title;
+        img.loading = "lazy";
+
+        const info = document.createElement("div");
+        info.className = "search-result-info";
+
+        const titleEl = document.createElement("div");
+        titleEl.className = "search-result-title";
+        titleEl.textContent = match.title || "Untitled";
+
+        const metaRow = document.createElement("div");
+        metaRow.className = "search-result-meta";
+
+        const categoryEl = document.createElement("span");
+        categoryEl.className = "search-result-category";
+        categoryEl.textContent = match.category || "Unknown";
+
+        const { badge, badgeType, meta } = formatMatchBadge(match);
+
+        const timeEl = document.createElement("span");
+        timeEl.className = "search-result-time";
+        timeEl.textContent = meta;
+
+        metaRow.appendChild(categoryEl);
+        metaRow.appendChild(timeEl);
+        info.appendChild(titleEl);
+        info.appendChild(metaRow);
+
+        const badgeEl = document.createElement("div");
+        badgeEl.className = "status-badge " + badgeType;
+        badgeEl.textContent = badge;
+
+        item.appendChild(img);
+        item.appendChild(info);
+        item.appendChild(badgeEl);
+
+        item.addEventListener("click", () => {
           window.location.href = `Matchinformation/index.html?id=${match.id}`;
         });
-        overlayResults.appendChild(div);
+
+        overlayResults.appendChild(item);
       });
     });
   }
 
-  // 📄 Init Match Information Page
+  // 📄 Match Information Page
   const urlParams = new URLSearchParams(window.location.search);
   const matchId = urlParams.get("id");
 
@@ -117,17 +188,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // Update page title + meta description
     if (titleEl) titleEl.textContent = `${match.title} Live Stream Links`;
     if (pageTitle) pageTitle.innerText = `${match.title} Live Stream Links`;
     document.title = `${match.title} Live Stream Links`;
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute("content", `Watch ${match.title} live stream with multiple HD and SD links.`);
-    }
 
     if (descEl) {
-      descEl.textContent = `Scroll down and choose a stream link below to watch ${match.title} live stream. If there are no links yet, please wait for the timer to countdown until the event is live.`;
+      descEl.textContent = `Scroll down and choose a stream link below to watch ${match.title} live stream.`;
     }
 
     // Countdown
@@ -153,25 +219,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Streams Section
     if (streamsContainer) streamsContainer.innerHTML = "";
 
-    const sourceMeta = {
-      alpha: "Most reliable (720p 30fps)",
-      charlie: "Good backup (poor quality occasionally)",
-      intel: "Large event coverage, iffy quality",
-      admin: "Admin added streams",
-      hotel: "Very high quality feeds & many backups",
-      foxtrot: "Good quality, offers home/away feeds",
-      delta: "Okayish backup (can lag/not load)",
-      echo: "Great quality overall"
-    };
-
     if (match.sources && match.sources.length > 0) {
-      const totalSources = match.sources.length;
-
-      const header = document.createElement("div");
-      header.className = "sources-header";
-      header.textContent = `Showing top quality sources • ${totalSources} of ${totalSources} sources`;
-      streamsContainer.appendChild(header);
-
       for (const source of match.sources) {
         try {
           const streamRes = await fetch(`https://streamed.pk/api/stream/${source.source}/${source.id}`);
@@ -183,7 +231,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           const sourceBox = document.createElement("div");
           sourceBox.className = "stream-source";
 
-          // Source header
           const headerRow = document.createElement("div");
           headerRow.className = "source-header";
           headerRow.innerHTML = `
@@ -191,13 +238,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             <span class="source-count">${streams.length} streams</span>
           `;
           sourceBox.appendChild(headerRow);
-
-          // Custom description
-          const miniDesc = document.createElement("small");
-          miniDesc.className = "source-desc";
-          miniDesc.textContent = sourceMeta[source.source.toLowerCase()] 
-            || "Reliable streams (Auto-selected quality)";
-          sourceBox.appendChild(miniDesc);
 
           // HD Streams
           if (hdStreams.length > 0) {
@@ -210,9 +250,8 @@ document.addEventListener("DOMContentLoaded", async () => {
               row.className = "stream-row";
               row.innerHTML = `
                 <span>HD Stream ${idx + 1}</span>
-                <span class="stream-lang">
-                  🌐 ${stream.language || "Unknown"}
-                </span>
+                <span class="stream-lang">${stream.language || "Unknown"}</span>
+                <span class="stream-arrow">↗</span>
               `;
               row.addEventListener("click", () => {
                 window.location.href = `Watchnow/index.html?url=${encodeURIComponent(stream.embedUrl)}`;
@@ -232,9 +271,8 @@ document.addEventListener("DOMContentLoaded", async () => {
               row.className = "stream-row";
               row.innerHTML = `
                 <span>SD Stream ${idx + 1}</span>
-                <span class="stream-lang">
-                  🌐 ${stream.language || "Unknown"}
-                </span>
+                <span class="stream-lang">${stream.language || "Unknown"}</span>
+                <span class="stream-arrow">↗</span>
               `;
               row.addEventListener("click", () => {
                 window.location.href = `Watchnow/index.html?url=${encodeURIComponent(stream.embedUrl)}`;
@@ -255,14 +293,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   } catch (e) {
     console.error("Error loading match information", e);
-    if (titleEl) titleEl.textContent = "Error loading match information";
-  }
-
-  // Back button
-  const backBtn = document.getElementById("back-button");
-  if (backBtn) {
-    backBtn.addEventListener("click", () => {
-      window.history.back();
-    });
   }
 });
