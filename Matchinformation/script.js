@@ -50,90 +50,105 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Streams Section
-    streamsContainer.innerHTML = "";
-    if (match.sources && match.sources.length > 0) {
-      const totalSources = match.sources.length;
+   // Streams Section
+streamsContainer.innerHTML = "";
 
-      // Show header count
-      const header = document.createElement("div");
-      header.className = "sources-header";
-      header.textContent = `Showing top quality sources • ${totalSources} of ${totalSources} sources`;
-      streamsContainer.appendChild(header);
+// Custom meta descriptions
+const sourceMeta = {
+  alpha: "Most reliable (720p 30fps)",
+  charlie: "Good backup (poor quality occasionally)",
+  intel: "Large event coverage, iffy quality",
+  admin: "Admin added streams",
+  hotel: "Very high quality feeds & many backups",
+  foxtrot: "Good quality, offers home/away feeds",
+  delta: "Okayish backup (can lag/not load)",
+  echo: "Great quality overall"
+};
 
-      for (const source of match.sources) {
-        try {
-          const streamRes = await fetch(`https://streamed.pk/api/stream/${source.source}/${source.id}`);
-          const streams = await streamRes.json();
+if (match.sources && match.sources.length > 0) {
+  const totalSources = match.sources.length;
 
-          // Separate HD and SD
-          const hdStreams = streams.filter(s => s.hd);
-          const sdStreams = streams.filter(s => !s.hd);
+  // Show header count
+  const header = document.createElement("div");
+  header.className = "sources-header";
+  header.textContent = `Showing top quality sources • ${totalSources} of ${totalSources} sources`;
+  streamsContainer.appendChild(header);
 
-          const sourceBox = document.createElement("div");
-          sourceBox.className = "stream-source";
+  for (const source of match.sources) {
+    try {
+      const streamRes = await fetch(`https://streamed.pk/api/stream/${source.source}/${source.id}`);
+      const streams = await streamRes.json();
 
-          // Source header
-          const headerRow = document.createElement("div");
-          headerRow.className = "source-header";
-          headerRow.innerHTML = `
-            <span class="source-name">${source.source.toUpperCase()}</span>
-            <span class="source-count">${streams.length} streams</span>
+      const hdStreams = streams.filter(s => s.hd);
+      const sdStreams = streams.filter(s => !s.hd);
+
+      const sourceBox = document.createElement("div");
+      sourceBox.className = "stream-source";
+
+      // Source header
+      const headerRow = document.createElement("div");
+      headerRow.className = "source-header";
+      headerRow.innerHTML = `
+        <span class="source-name">${source.source.toUpperCase()}</span>
+        <span class="source-count">${streams.length} streams</span>
+      `;
+      sourceBox.appendChild(headerRow);
+
+      // Custom description (fallback if not in dictionary)
+      const miniDesc = document.createElement("small");
+      miniDesc.className = "source-desc";
+      miniDesc.textContent = sourceMeta[source.source.toLowerCase()] 
+        || "Reliable streams (Auto-selected quality)";
+      sourceBox.appendChild(miniDesc);
+
+      // HD Streams
+      if (hdStreams.length > 0) {
+        const hdTitle = document.createElement("h4");
+        hdTitle.textContent = "HD Streams";
+        sourceBox.appendChild(hdTitle);
+
+        hdStreams.forEach((stream, idx) => {
+          const row = document.createElement("div");
+          row.className = "stream-row";
+          row.innerHTML = `
+            <span>HD Stream ${idx + 1}</span>
+            <span class="stream-lang">${stream.language || "Unknown"}</span>
           `;
-          sourceBox.appendChild(headerRow);
-
-          // Mini description
-          const miniDesc = document.createElement("small");
-          miniDesc.className = "source-desc";
-          miniDesc.textContent = source.note || "Reliable streams (auto-selected quality)";
-          sourceBox.appendChild(miniDesc);
-
-          // Add HD streams
-          if (hdStreams.length > 0) {
-            const hdTitle = document.createElement("h4");
-            hdTitle.textContent = "HD Streams";
-            sourceBox.appendChild(hdTitle);
-
-            hdStreams.forEach((stream, idx) => {
-              const row = document.createElement("div");
-              row.className = "stream-row";
-              row.innerHTML = `
-                <span>HD Stream ${idx + 1}</span>
-                <span class="stream-lang">${stream.language || "Unknown"}</span>
-              `;
-              row.addEventListener("click", () => {
-                window.location.href = `Watchnow/index.html?url=${encodeURIComponent(stream.embedUrl)}`;
-              });
-              sourceBox.appendChild(row);
-            });
-          }
-
-          // Add SD streams
-          if (sdStreams.length > 0) {
-            const sdTitle = document.createElement("h4");
-            sdTitle.textContent = "SD Streams";
-            sourceBox.appendChild(sdTitle);
-
-            sdStreams.forEach((stream, idx) => {
-              const row = document.createElement("div");
-              row.className = "stream-row";
-              row.innerHTML = `
-                <span>SD Stream ${idx + 1}</span>
-                <span class="stream-lang">${stream.language || "Unknown"}</span>
-              `;
-              row.addEventListener("click", () => {
-                window.location.href = `Watchnow/index.html?url=${encodeURIComponent(stream.embedUrl)}`;
-              });
-              sourceBox.appendChild(row);
-            });
-          }
-
-          streamsContainer.appendChild(sourceBox);
-
-        } catch (e) {
-          console.error("Error loading streams for source", source.source, e);
-        }
+          row.addEventListener("click", () => {
+            window.location.href = `Watchnow/index.html?url=${encodeURIComponent(stream.embedUrl)}`;
+          });
+          sourceBox.appendChild(row);
+        });
       }
-    } else {
+
+      // SD Streams
+      if (sdStreams.length > 0) {
+        const sdTitle = document.createElement("h4");
+        sdTitle.textContent = "SD Streams";
+        sourceBox.appendChild(sdTitle);
+
+        sdStreams.forEach((stream, idx) => {
+          const row = document.createElement("div");
+          row.className = "stream-row";
+          row.innerHTML = `
+            <span>SD Stream ${idx + 1}</span>
+            <span class="stream-lang">${stream.language || "Unknown"}</span>
+          `;
+          row.addEventListener("click", () => {
+            window.location.href = `Watchnow/index.html?url=${encodeURIComponent(stream.embedUrl)}`;
+          });
+          sourceBox.appendChild(row);
+        });
+      }
+
+      streamsContainer.appendChild(sourceBox);
+
+    } catch (e) {
+      console.error("Error loading streams for source", source.source, e);
+    }
+  }
+}
+ else {
       streamsContainer.innerHTML = "<p>No streams available yet.</p>";
     }
 
@@ -147,3 +162,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.history.back();
   });
 });
+
