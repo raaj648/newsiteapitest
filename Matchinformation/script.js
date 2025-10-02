@@ -26,7 +26,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Update title
     titleEl.textContent = `${match.title} Live Stream Links`;
-    if (pageTitle) pageTitle.textContent = `${match.title} Live Stream Links`;
+    if (pageTitle) pageTitle.innerText = `${match.title} Live Stream Links`;
+document.title = `${match.title} Live Stream Links`; // updates browser tab
+
     descEl.textContent = `Choose a source below to watch ${match.title}.`;
 
     // Countdown
@@ -162,4 +164,5 @@ if (match.sources && match.sources.length > 0) {
     window.history.back();
   });
 });
+
 
