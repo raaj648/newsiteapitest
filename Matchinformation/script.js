@@ -204,7 +204,7 @@ overlayInput.addEventListener("keydown", (e) => {
     document.title = `${match.title} Live Stream Links`;
 
     if (descEl) {
-      descEl.textContent = `Scroll down and choose a stream link below to watch ${match.title} live stream.`;
+      descEl.textContent = `Scroll down and choose a stream link below to watch ${match.title} live stream. If there is no links or buttons, please wait for the timer to countdown until the event is live.`;
     }
 
     // Countdown
@@ -381,6 +381,7 @@ if (sdStreams.length > 0) {
     });
   }
 });
+
 
 
 
