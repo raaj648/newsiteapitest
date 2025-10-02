@@ -94,7 +94,7 @@ overlayInput.addEventListener("input", function () {
 
     // Click → go to match details page
     item.addEventListener("click", () => {
-      window.location.href = `match-details.html?id=${match.id}`;
+      window.location.href = `https://raaj648.github.io/newsiteapitest/SearchResult/?id=${match.id}`;
     });
 
     overlayResults.appendChild(item);
@@ -446,3 +446,4 @@ document.addEventListener("DOMContentLoaded", () => {
   loadCategories();          // 👈 Load category section first
   categories.forEach(loadCategory); // then load match sections
 });
+
