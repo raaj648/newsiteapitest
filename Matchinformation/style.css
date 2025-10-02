@@ -76,3 +76,19 @@
 .hidden {
   display: none;
 }
+.watch-btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 8px 14px;
+  background: #00bfff;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.watch-btn:hover {
+  background: #0099cc;
+}
+
