@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Update title
     titleEl.textContent = `${match.title} Live Stream Links`;
     if (pageTitle) pageTitle.textContent = `${match.title} Live Stream Links`;
-    descEl.textContent = `Choose a stream link below to watch ${match.title}.`;
+    descEl.textContent = `Choose a source below to watch ${match.title}.`;
 
     // Countdown
     const matchDate = Number(match.date);
@@ -52,29 +52,83 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Streams Section
     streamsContainer.innerHTML = "";
     if (match.sources && match.sources.length > 0) {
+      const totalSources = match.sources.length;
+
+      // Show header count
+      const header = document.createElement("div");
+      header.className = "sources-header";
+      header.textContent = `Showing top quality sources • ${totalSources} of ${totalSources} sources`;
+      streamsContainer.appendChild(header);
+
       for (const source of match.sources) {
         try {
           const streamRes = await fetch(`https://streamed.pk/api/stream/${source.source}/${source.id}`);
           const streams = await streamRes.json();
 
-          const sourceDiv = document.createElement("div");
-          sourceDiv.className = "stream-source";
-          sourceDiv.innerHTML = `<h3>${source.source.toUpperCase()}</h3>`;
+          // Separate HD and SD
+          const hdStreams = streams.filter(s => s.hd);
+          const sdStreams = streams.filter(s => !s.hd);
 
-          streams.forEach(stream => {
-            const item = document.createElement("div");
-            item.className = "stream-item";
-            item.innerHTML = `
-              <strong>Stream ${stream.streamNo}</strong> 
-              ${stream.hd ? "HD" : "SD"} • ${stream.language}
-              <br>
-              <a href="Watchnow/index.html?url=${encodeURIComponent(stream.embedUrl)}" 
-                 class="watch-btn">▶ Watch Now</a>
-            `;
-            sourceDiv.appendChild(item);
-          });
+          const sourceBox = document.createElement("div");
+          sourceBox.className = "stream-source";
 
-          streamsContainer.appendChild(sourceDiv);
+          // Source header
+          const headerRow = document.createElement("div");
+          headerRow.className = "source-header";
+          headerRow.innerHTML = `
+            <span class="source-name">${source.source.toUpperCase()}</span>
+            <span class="source-count">${streams.length} streams</span>
+          `;
+          sourceBox.appendChild(headerRow);
+
+          // Mini description
+          const miniDesc = document.createElement("small");
+          miniDesc.className = "source-desc";
+          miniDesc.textContent = source.note || "Reliable streams (auto-selected quality)";
+          sourceBox.appendChild(miniDesc);
+
+          // Add HD streams
+          if (hdStreams.length > 0) {
+            const hdTitle = document.createElement("h4");
+            hdTitle.textContent = "HD Streams";
+            sourceBox.appendChild(hdTitle);
+
+            hdStreams.forEach((stream, idx) => {
+              const row = document.createElement("div");
+              row.className = "stream-row";
+              row.innerHTML = `
+                <span>HD Stream ${idx + 1}</span>
+                <span class="stream-lang">${stream.language || "Unknown"}</span>
+              `;
+              row.addEventListener("click", () => {
+                window.location.href = `Watchnow/index.html?url=${encodeURIComponent(stream.embedUrl)}`;
+              });
+              sourceBox.appendChild(row);
+            });
+          }
+
+          // Add SD streams
+          if (sdStreams.length > 0) {
+            const sdTitle = document.createElement("h4");
+            sdTitle.textContent = "SD Streams";
+            sourceBox.appendChild(sdTitle);
+
+            sdStreams.forEach((stream, idx) => {
+              const row = document.createElement("div");
+              row.className = "stream-row";
+              row.innerHTML = `
+                <span>SD Stream ${idx + 1}</span>
+                <span class="stream-lang">${stream.language || "Unknown"}</span>
+              `;
+              row.addEventListener("click", () => {
+                window.location.href = `Watchnow/index.html?url=${encodeURIComponent(stream.embedUrl)}`;
+              });
+              sourceBox.appendChild(row);
+            });
+          }
+
+          streamsContainer.appendChild(sourceBox);
+
         } catch (e) {
           console.error("Error loading streams for source", source.source, e);
         }
