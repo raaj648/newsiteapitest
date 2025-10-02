@@ -229,7 +229,7 @@ h1 {
     max-width: 180px;
   }
   .match-poster {
-    height: 110px;
+    height: auto;
   }
 }
 
@@ -279,7 +279,7 @@ h1 {
 
   .match-card {
     flex: 0 0 90%;   /* single card full width */
-    max-width: 100%;
+    max-width: 170px;
   }
 
   .match-poster {
@@ -470,3 +470,4 @@ h1 {
   animation: pulse 1.2s infinite;
   z-index: 2;
 }
+
