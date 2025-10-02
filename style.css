@@ -296,7 +296,7 @@ gap: 10px;
     line-height: 16px;
   }
   #overlay-search-results .search-result-item {
-flex: 0 0 165px;
+flex: 0 0 165px! important;
     
   }
 }
@@ -478,6 +478,7 @@ flex: 0 0 165px;
   animation: pulse 1.2s infinite;
   z-index: 2;
 }
+
 
 
 
