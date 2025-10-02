@@ -283,7 +283,7 @@ gap: 10px;
 
   .match-card {
     flex: 0 0 90%;   /* single card full width */
-    max-width: 170px;
+    max-width: 165px;
   }
 
   .match-poster {
@@ -474,6 +474,7 @@ gap: 10px;
   animation: pulse 1.2s infinite;
   z-index: 2;
 }
+
 
 
 
