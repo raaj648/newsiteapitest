@@ -133,5 +133,11 @@
   height: 16px;
 }
 
+.stream-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
 
 
