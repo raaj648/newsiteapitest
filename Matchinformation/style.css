@@ -42,6 +42,22 @@
   color: #ffcc00;
 }
 
+
+.hidden {
+  display: none;
+}
+
+.sources-header {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #2a2a2a;
+  border-radius: 6px;
+  color: #ffcc00;
+  text-align: center;
+}
+
 .stream-source {
   background: #2b2b2b;
   margin-bottom: 20px;
@@ -49,46 +65,54 @@
   border-radius: 10px;
 }
 
-.stream-source h3 {
-  margin-bottom: 5px;
+.source-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.source-name {
   font-size: 1.2rem;
+  font-weight: bold;
   color: #00bfff;
 }
 
-.stream-source small {
-  display: block;
-  margin-bottom: 10px;
+.source-count {
+  font-size: 0.9rem;
   color: #aaa;
 }
 
-.stream-item {
+.source-desc {
+  display: block;
+  margin-bottom: 12px;
+  color: #bbb;
+  font-size: 0.9rem;
+}
+
+.stream-source h4 {
+  margin: 10px 0 5px;
+  font-size: 1rem;
+  color: #ffcc00;
+}
+
+.stream-row {
+  display: flex;
+  justify-content: space-between;
   padding: 10px;
   background: #3c3c3c;
-  margin: 8px 0;
+  margin: 6px 0;
   border-radius: 6px;
-}
-
-.stream-item strong {
-  display: inline-block;
-  margin-right: 10px;
-}
-
-.hidden {
-  display: none;
-}
-.watch-btn {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 8px 14px;
-  background: #00bfff;
-  color: #fff;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  font-weight: bold;
-  text-decoration: none;
+  cursor: pointer;
   transition: 0.3s;
 }
-.watch-btn:hover {
-  background: #0099cc;
+.stream-row:hover {
+  background: #4d4d4d;
 }
+
+.stream-lang {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
 
