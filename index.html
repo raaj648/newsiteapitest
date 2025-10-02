@@ -5,16 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Streamed Matches</title>
   <link rel="stylesheet" href="style.css">
+	<script src="togglesearchbar.js" defer></script>
 </head>
 <body>
+
+	<!-- Sticky Header -->
+  <div class="site-header">
+    <div class="header-left">
+      <!-- Logo (desktop only) -->
+      <a href="index.html" class="site-logo">
+        <img src="https://methstreams.world/Buffstreams.world.jpg" 
+             alt="Site Logo" loading="lazy">
+      </a>
+
+      <!-- Home icon -->
+      <a href="index.html" class="home-icon" title="Home">🏠</a>
+
+      <!-- Search -->
+      <div class="search-container header-search">
+        <input type="text" id="search-input" placeholder="Search matches..." autocomplete="off">
+      </div>
+    </div>
+
+    <!-- Right icons -->
+    <div class="header-right">
+      <a href="https://t.me/yourchannel" target="_blank" class="social-icon telegram" title="Join Telegram">📢</a>
+      <a href="https://discord.gg/yourserver" target="_blank" class="social-icon discord" title="Join Discord">💬</a>
+    </div>
+  </div>
+	
 <div class="fullpage">
   <header>
     <h1>📺 Streamed Matches</h1>
 	
-	 <div class="search-container">
-    <input type="text" id="search-input" placeholder="Search matches..." autocomplete="off">
-    
-  </div>
+	
 	
 	
   </header>
@@ -53,3 +77,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
