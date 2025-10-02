@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .results-header {
+      text-align: center;
+      margin: 20px 0;
+      color: #1a73e8;
+    }
+    #search-results {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      justify-content: center;
+    }
+    .no-results {
+      text-align: center;
+      color: #666;
+      font-size: 16px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Header -->
+  <div class="site-header">
+    <div class="header-left">
+      <a href="../index.html" class="site-logo">
+        <img src="https://methstreams.world/Buffstreams.world.jpg" alt="Site Logo" loading="lazy">
+      </a>
+      <a href="../index.html" class="home-icon" title="Home"><i class="fas fa-home"></i></a>
+
+      <!-- ✅ Wrap input inside form with correct id -->
+      <form id="search-form" class="search-container header-search">
+        <input type="text" id="search-input" placeholder="Search matches..." autocomplete="off">
+      </form>
+    </div>
+
+    <div class="header-right">
+      <a href="https://t.me/yourchannel" target="_blank" class="social-icon telegram" title="Join Telegram">
+        <i class="fab fa-telegram"></i>
+      </a>
+      <a href="https://discord.gg/yourserver" target="_blank" class="social-icon discord" title="Join Discord">
+        <i class="fab fa-discord"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- Page Title -->
+  <h2 class="results-header">🔍 Search Results</h2>
+
+  <!-- Search Results -->
+  <div id="search-results"></div>
+ 
+
+  <script defer>
+    let allMatchesCache = [];
+	
+	document.addEventListener("DOMContentLoaded", async () => {
+  await fetchAllMatches();
+
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get("q") || "";
+  const input = document.getElementById("search-input");
+
+  input.value = q;
+  if (q) renderResults(q);
+
+  // Submit handler (keeps your reload logic)
+  document.getElementById("search-form").addEventListener("submit", e => {
+    e.preventDefault();
+    const newQ = input.value.trim();
+    if (newQ) {
+      window.location.href = `index.html?q=${encodeURIComponent(newQ)}`;
+    }
+  });
+
+  // ✅ Live search handler
+  input.addEventListener("input", () => {
+    const liveQ = input.value.trim();
+    if (liveQ) {
+      renderResults(liveQ);
+    } else {
+      document.getElementById("search-results").innerHTML = "";
+    }
+  });
+});
+
+
+    // ✅ Fetch all matches
+    async function fetchAllMatches() {
+      try {
+        const res = await fetch("https://streamed.pk/api/matches/all");
+        let allMatches = await res.json();
+
+        const endpoints = [
+          "https://streamed.pk/api/matches/live",
+          "https://streamed.pk/api/matches/tennis",
+          "https://streamed.pk/api/matches/football",
+          "https://streamed.pk/api/matches/basketball",
+          "https://streamed.pk/api/matches/cricket",
+          "https://streamed.pk/api/matches/mma",
+          "https://streamed.pk/api/matches/hockey",
+          "https://streamed.pk/api/matches/baseball",
+          "https://streamed.pk/api/matches/boxing"
+        ];
+
+        const results = await Promise.all(endpoints.map(ep =>
+          fetch(ep).then(r => r.ok ? r.json() : [])
+        ));
+        results.forEach(list => { allMatches = allMatches.concat(list || []); });
+
+        const map = new Map();
+        allMatches.forEach(m => map.set(m.id, m));
+        allMatchesCache = Array.from(map.values());
+      } catch (err) {
+        console.error("Error fetching matches:", err);
+      }
+    }
+
+    // ✅ Helpers
+    function buildPosterUrl(match) {
+      const placeholder = "https://methstreams.world/mysite.jpg";
+      if (match.teams?.home?.badge && match.teams?.away?.badge) {
+        return `https://streamed.pk/api/images/poster/${match.teams.home.badge}/${match.teams.away.badge}.webp`;
+      }
+      if (match.poster) {
+        const p = String(match.poster).trim();
+        if (p.startsWith("http")) return p;
+        if (p.startsWith("/")) return `https://streamed.pk${p}.webp`;
+        return `https://streamed.pk/api/images/proxy/${p}.webp`;
+      }
+      return placeholder;
+    }
+
+    function formatMatchBadge(match) {
+      const date = new Date(match.date);
+      const now = new Date();
+      const isToday = date.toDateString() === now.toDateString();
+
+      if (date.getTime() <= now.getTime()) {
+        return { badge: "LIVE", badgeType: "live", meta: date.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}) };
+      }
+      if (isToday) {
+        return { badge: date.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}), badgeType:"date", meta:"Today" };
+      }
+      return { badge: date.toLocaleDateString("en-US",{month:"short",day:"numeric"}), badgeType:"date", meta: date.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}) };
+    }
+
+    // ✅ Render Results
+    function renderResults(query) {
+      const container = document.getElementById("search-results");
+      container.innerHTML = "";
+
+      const q = query.toLowerCase();
+      const filtered = allMatchesCache.filter(match => {
+        return (match.title || "").toLowerCase().includes(q) ||
+               (match.category || "").toLowerCase().includes(q) ||
+               (match.league || "").toLowerCase().includes(q) ||
+               (match.teams?.home?.name || "").toLowerCase().includes(q) ||
+               (match.teams?.away?.name || "").toLowerCase().includes(q);
+      });
+
+      if (!filtered.length) {
+        container.innerHTML = `<p class="no-results">❌ No matches found for "${query}"</p>`;
+        return;
+      }
+
+      filtered.forEach(match => {
+        const card = document.createElement("div");
+        card.className = "match-card";
+
+        const img = document.createElement("img");
+        img.className = "match-poster";
+        img.src = buildPosterUrl(match);
+        img.alt = match.title;
+        img.loading = "lazy";
+
+        const badgeEl = document.createElement("div");
+        const { badge, badgeType, meta } = formatMatchBadge(match);
+        badgeEl.className = "status-badge " + badgeType;
+        badgeEl.textContent = badge;
+
+        const info = document.createElement("div");
+        info.className = "match-info";
+
+        const titleEl = document.createElement("div");
+        titleEl.className = "match-title";
+        titleEl.textContent = match.title || "Untitled";
+
+        const metaRow = document.createElement("div");
+        metaRow.className = "match-meta-row";
+
+        const catEl = document.createElement("span");
+        catEl.className = "match-category";
+        catEl.textContent = match.category || "Unknown";
+
+        const timeEl = document.createElement("span");
+        timeEl.textContent = meta;
+
+        metaRow.appendChild(catEl);
+        metaRow.appendChild(timeEl);
+
+        info.appendChild(titleEl);
+        info.appendChild(metaRow);
+
+        card.appendChild(img);
+        card.appendChild(badgeEl);
+        card.appendChild(info);
+
+        card.addEventListener("click", () => {
+          window.location.href = `../match-details.html?id=${match.id}`;
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    // ✅ Init
+    document.addEventListener("DOMContentLoaded", async () => {
+      await fetchAllMatches();
+
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get("q") || "";
+      document.getElementById("search-input").value = q;
+      if (q) renderResults(q);
+
+      document.getElementById("search-form").addEventListener("submit", e => {
+        e.preventDefault();
+        const newQ = document.getElementById("search-input").value.trim();
+        if (newQ) {
+          // ✅ Reload same page with query
+          window.location.href = `index.html?q=${encodeURIComponent(newQ)}`;
+        }
+      });
+    });
+  </script>
+  
+</body>
+</html>
