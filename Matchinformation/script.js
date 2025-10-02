@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const descEl = document.getElementById("match-description");
   const countdownEl = document.getElementById("countdown-section");
   const streamsContainer = document.getElementById("streams-container");
-  const pageTitle = document.getElementById("page-title"); // fix #1
+  const pageTitle = document.getElementById("page-title");
 
   if (!matchId) {
     titleEl.textContent = "Match not found";
@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const res = await fetch("https://streamed.pk/api/matches/all");
     const matches = await res.json();
 
-    // ensure string comparison
     const match = matches.find(m => String(m.id) === String(matchId));
 
     if (!match) {
@@ -25,10 +24,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // Update title + tab
+    // Update title
     titleEl.textContent = `${match.title} Live Stream Links`;
     if (pageTitle) pageTitle.textContent = `${match.title} Live Stream Links`;
-    descEl.textContent = `To watch ${match.title} streams, scroll down and choose a stream link.`;
+    descEl.textContent = `Choose a stream link below to watch ${match.title}.`;
 
     // Countdown
     const matchDate = Number(match.date);
@@ -50,7 +49,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const interval = setInterval(updateCountdown, 1000);
     }
 
-    // Streams
+    // Streams Section
+    streamsContainer.innerHTML = "";
     if (match.sources && match.sources.length > 0) {
       for (const source of match.sources) {
         try {
@@ -68,7 +68,8 @@ document.addEventListener("DOMContentLoaded", async () => {
               <strong>Stream ${stream.streamNo}</strong> 
               ${stream.hd ? "HD" : "SD"} • ${stream.language}
               <br>
-              <iframe src="${stream.embedUrl}" width="100%" height="400" frameborder="0" allowfullscreen></iframe>
+              <a href="Watchnow/index.html?url=${encodeURIComponent(stream.embedUrl)}" 
+                 class="watch-btn">▶ Watch Now</a>
             `;
             sourceDiv.appendChild(item);
           });
