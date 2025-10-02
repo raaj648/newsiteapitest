@@ -180,7 +180,7 @@ function setupSearch() {
 overlayInput.addEventListener("keydown", (e) => {
   if(e.key === "Enter") {
     const q = overlayInput.value.trim();
-    if(q) window.location.href = `search-results.html?q=${encodeURIComponent(q)}`;
+    if(q) window.location.href = `https://raaj648.github.io/newsiteapitest/SearchResult/?q=${encodeURIComponent(q)}`;
   }
 });
 
@@ -446,4 +446,5 @@ document.addEventListener("DOMContentLoaded", () => {
   loadCategories();          // 👈 Load category section first
   categories.forEach(loadCategory); // then load match sections
 });
+
 
