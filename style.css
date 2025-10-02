@@ -225,8 +225,8 @@ h1 {
 /* Tablets */
 @media (max-width: 1024px) {
   .match-card {
-    flex: 0 0 180px;
-    max-width: 180px;
+    flex: 0 0 195px;
+    max-width: 195px;
   }
   .match-poster {
     height: auto;
@@ -249,7 +249,7 @@ h1 {
 
   .match-card {
     flex: 0 0 45%;   /* 2 cards per row look */
-    max-width: 100%;
+    max-width: 210px;
   }
 
   .match-poster {
@@ -470,5 +470,6 @@ h1 {
   animation: pulse 1.2s infinite;
   z-index: 2;
 }
+
 
 
