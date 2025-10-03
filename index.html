@@ -5,32 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Streamed Matches</title>
   <link rel="stylesheet" href="style.css">
-	<script src="togglesearchbar.js" defer></script>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Link to the slider's CSS file -->
+  <link rel="stylesheet" href="featuredslider.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-	<!-- Sticky Header -->
+  <!-- Sticky Header -->
   <div class="site-header">
     <div class="header-left">
-      <!-- Logo (desktop only) -->
       <a href="index.html" class="site-logo">
         <img src="https://methstreams.world/Buffstreams.world.jpg" 
              alt="Site Logo" loading="lazy">
       </a>
-
-      <!-- Home icon -->
       <a href="index.html" class="home-icon" title="Home">
 		   <i class="fas fa-home"></i>
 	  </a>
-
-      <!-- Search -->
       <div class="search-container header-search">
         <input type="text" id="search-input" placeholder="Search matches..." autocomplete="off">
       </div>
     </div>
-
-    <!-- Right icons -->
     <div class="header-right">
       <a href="https://t.me/yourchannel" target="_blank" class="social-icon telegram" title="Join Telegram">
 		  <i class="fab fa-telegram"></i>
@@ -41,48 +35,71 @@
     </div>
   </div>
 	
-<div class="fullpage">
-  <header>
-    <h1>📺 Streamed Matches</h1>
-	
-	
-	
-	
-  </header>
+  <div class="fullpage">
+    <header>
+      <h1>📺 Streamed Matches</h1>
+    </header>
   
-   <!-- Categories Section -->
-  <section id="categories-section">
-    <div class="section-header">
-      <h2>🏆 Categories</h2>
-      <div class="pagination-buttons">
-        <button id="cat-left">←</button>
-        <button id="cat-right">→</button>
+    <!-- ============================================= -->
+    <!-- === FEATURED MATCHES SLIDER SECTION START === -->
+    <!-- ============================================= -->
+    <section class="featured-section">
+      <!-- Categories row -->
+      <div class="categories-wrapper">
+        <div class="categories" id="categories" role="tablist" aria-label="Featured categories"></div>
       </div>
-    </div>
-    <div class="categories-container" id="categories-container">
-      <!-- Category cards injected dynamically -->
-    </div>
-  </section>
-  
-  
+      <!-- Slider & external arrows -->
+      <div class="slider-area">
+        <button class="nav-arrow nav-left desktop-only" id="prevBtn" aria-label="Previous match">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="slider-container" id="sliderContainer">
+          <div class="slider" id="slider"><!-- slide injected --></div>
+        </div>
+        <button class="nav-arrow nav-right desktop-only" id="nextBtn" aria-label="Next match">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+    <!-- =========================================== -->
+    <!-- === FEATURED MATCHES SLIDER SECTION END === -->
+    <!-- =========================================== -->
 
-  <main id="matches-sections">
-    <!-- Sections will be injected dynamically by JS -->
-  </main>
+    <!-- Categories Section -->
+    <section id="categories-section">
+      <div class="section-header">
+        <h2>🏆 Categories</h2>
+        <div class="pagination-buttons">
+          <button id="cat-left">←</button>
+          <button id="cat-right">→</button>
+        </div>
+      </div>
+      <div class="categories-container" id="categories-container">
+        <!-- Category cards injected dynamically -->
+      </div>
+    </section>
+  
+    <main id="matches-sections">
+      <!-- Sections will be injected dynamically by JS -->
+    </main>
   </div>
   
   <!-- Search Overlay -->
-<div id="search-overlay">
-  <div class="search-overlay-content">
-    <button id="search-close">&times;</button>
-    <input type="text" id="overlay-search-input" placeholder="Search matches..." autocomplete="off">
-    <div id="overlay-search-results"></div>
+  <div id="search-overlay">
+    <div class="search-overlay-content">
+      <button id="search-close">&times;</button>
+      <input type="text" id="overlay-search-input" placeholder="Search matches..." autocomplete="off">
+      <div id="overlay-search-results"></div>
+    </div>
   </div>
-</div>
 
-
+  <script src="togglesearchbar.js"></script>
   <script src="script.js"></script>
+  <!-- Add the script for the slider -->
+  <script src="featuredslider.js"></script>
 </body>
 </html>
-
-
