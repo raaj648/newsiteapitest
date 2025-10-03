@@ -7,29 +7,37 @@
   --glass: rgba(255,255,255,0.06);
 }
 
-*{box-sizing:border-box}
-body {
-  margin:0;
-  padding:20px;
-  font-family:"Helvetica Neue",Arial,sans-serif;
-  background:var(--bg);
-  color:#fff;
-}
+
+
 
 /* Container */
 .featured-section {
   max-width:1100px;
   margin:0 auto;
+  color: #fff;
+font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
+.featured-section .team-logo img {
+width: 64px; height: 64px; /* default */
+border-radius: 8px;
+object-fit: contain;
+background: transparent;
+}
+@media (max-width:900px){ .featured-section .team-logo img { width:50px; height:50px; } }
+@media (max-width:720px){ .featured-section .team-logo img { width:56px; height:56px; } }
+
 /* Categories row */
-.categories-wrapper { padding-bottom:12px; }
+.categories-wrapper { 
+display: flex;
+  justify-content: center; /* centers categories container */
+ }
 .categories {
-  display:flex;
-  gap:10px;
-  overflow-x:auto;
-  padding:8px 4px;
-  -webkit-overflow-scrolling:touch;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 8px 4px;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
 }
 .categories::-webkit-scrollbar { height:8px; }
@@ -42,8 +50,8 @@ body {
   align-items:center;
   gap:8px;
   padding:10px 14px;
-  border-radius:999px;
-  background:var(--pill);
+  border-radius:0.5rem;
+  background:transparent;
   color:#fff;
   white-space:nowrap;
   cursor:pointer;
@@ -89,8 +97,8 @@ body {
 /* Slider container */
 .slider-container {
   flex:1;
-  background:var(--panel);
-  border-radius:12px;
+  border: 1px solid #262626;
+  border-radius:0.5rem;
   padding:24px;
   position:relative;
   min-height:260px;
@@ -109,11 +117,12 @@ body {
   margin-bottom: 12px;
 }
 .featured-label {
-  background:var(--accent);
-  padding:6px 12px;
+  
+  padding:3px 7px;
   border-radius:8px;
   font-weight:700;
   font-size:12px;
+  border: 0.5px solid #262626;
 }
 .slide-category {
   position: absolute;
@@ -154,9 +163,9 @@ body {
   animation:pulse 1s infinite;
 }
 @keyframes pulse {
-  0% { transform:scale(1); opacity:1; }
-  50% { transform:scale(1.4); opacity:.5; }
-  100% { transform:scale(1); opacity:1; }
+  0% { opacity:1; }
+  50% { opacity:.5; }
+  100% { opacity:1; }
 }
 
 /* Match layout */
@@ -164,27 +173,37 @@ body {
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:18px;
   margin-bottom:12px;
   flex-wrap:nowrap; /* prevent wrapping on medium screens */
 }
 .home-section, .vs-section, .away-section {
   display:flex;
   align-items:center;
-  justify-content:center;
   padding:8px;
-  border-radius:8px;
   flex-shrink:1; /* allow shrinking */
 }
-.home-section { background:rgba(229,9,20,0.15); }
-.away-section { background:rgba(20,130,255,0.15); }
+
+
+.home-section { 
+background:#DC2626; 
+justify-content:right;
+width: 100%;
+border-radius:0.5rem;
+}
+.away-section { 
+background:#262626; 
+justify-content:left;
+Width: 100%;
+border-radius:0.5rem;
+}
 .vs-section { background:rgba(255,255,255,0.05); }
 
 .team-name {
-  font-weight:800;
-  font-size:20px;
+  font-weight:750;
+  font-size:24px;
   margin:0 10px;
   white-space:nowrap;
+  text-transform: uppercase;
 }
 .team-logo img {
   max-width:64px;
@@ -193,29 +212,30 @@ body {
   object-fit: contain;
   background: transparent; /* remove grey block if not desired */
 }
-.vs-block { font-weight:900; font-size:20px; }
+.vs-block { font-weight:750; font-size:20px; color: #a3a3a3;}
 
 /* Date/time + button */
-.date-time { font-size:14px; color:var(--muted); margin-top:8px; }
+.date-time { font-size:14px; color:var(--muted); margin-top:15px; }
 .watch-btn {
   display:inline-block;
-  margin-top:14px;
-  background:var(--accent);
+  margin-top:16px;
+  background:#DC2626;
   color:#fff;
-  padding:12px 28px;
-  border-radius:8px;
-  font-weight:800;
+  padding:12px 50px;
+  border-radius:0.5rem;
+  font-weight:600;
   text-decoration:none;
+  font-size:18px;
 }
-.watch-btn:hover { background:#f6121d }
+.watch-btn:hover { background:#f73434 }
 
 /* RESPONSIVE */
 .desktop-only { display:flex; }
 .mobile-only { display:none; }
 
 @media (max-width:900px) {
-  .match-row { gap:10px; }
-  .team-name { font-size:16px; }
+  
+  .team-name { font-size:18px; }
   .team-logo img { max-width:50px; max-height:50px; }
 }
 
@@ -235,9 +255,9 @@ body {
   }
   .match-row {
     flex-direction:column;
-    gap:14px;
+    
   }
-  .team-name { font-size:16px; }
+  .team-name { font-size:18px; }
   .team-logo img { max-width:56px; max-height:56px; }
 }
 
