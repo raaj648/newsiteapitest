@@ -256,6 +256,10 @@ width: 34px;
     border-radius: 0.5rem;
     
   }
+  .featured-label {
+font-weight: 600;
+    
+  }
   .slide-header .mobile-arrows {
     display:flex;
     gap:6px;
@@ -280,6 +284,7 @@ width: 34px;
   from { opacity:0; transform:translateY(8px); }
   to { opacity:1; transform:translateY(0); }
 }
+
 
 
 
