@@ -218,13 +218,27 @@ window.toggleTheme = () => {
 // ---------------------------
 // INITIALIZE EVERYTHING ON PAGE LOAD
 // ---------------------------
+//
+// THIS IS THE CORRECTED CODE
+//
 document.addEventListener("DOMContentLoaded", async () => {
   setupTheme(); // Set theme based on user preference
   const searchDataPromise = fetchAllMatchesForSearch();
   loadTopCategories();
+  
   const mainLoader = document.querySelector("#matches-sections > .loader");
-  await Promise.all(matchCategories.map(cat => loadMatchCategory(cat)));
+
+  // --- START OF FIX ---
+  // Use a for...of loop to process categories one by one, preserving order.
+  for (const category of matchCategories) {
+    await loadMatchCategory(category);
+  }
+  // --- END OF FIX ---
+
   if (mainLoader) mainLoader.remove();
+  
+  // Wait for search data and then set up the search functionality
   await searchDataPromise;
   setupSearch();
 });
+
