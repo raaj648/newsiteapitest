@@ -250,6 +250,12 @@ border-radius:0.5rem;
     justify-content:space-between;
     align-items:center;
   }
+  .nav-arrow {
+width: 34px;
+    height: 34px;
+    border-radius: 0.5rem;
+    
+  }
   .slide-header .mobile-arrows {
     display:flex;
     gap:6px;
@@ -274,5 +280,6 @@ border-radius:0.5rem;
   from { opacity:0; transform:translateY(8px); }
   to { opacity:1; transform:translateY(0); }
 }
+
 
 
