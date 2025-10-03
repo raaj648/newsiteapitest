@@ -4,10 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Streamed Matches</title>
+  <meta name="description" content="Watch live football, cricket, basketball, and more — all streamed matches in one place.">
+  
+  <meta property="og:title" content="Streamed Matches Live">
+<meta property="og:description" content="Watch live matches: football, cricket, basketball & more.">
+<meta property="og:image" content="https://methstreams.world/mysite.jpg">
+<meta property="og:type" content="website">
+
+
+  
+  
+  
+  <link rel="preconnect" href="https://streamed.pk" crossorigin> 
+  <link rel="dns-prefetch" href="//streamed.pk"> 
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin> <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
   <link rel="stylesheet" href="style.css">
   <!-- Link to the slider's CSS file -->
   <link rel="stylesheet" href="featuredslider.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="togglesearchbar.js" defer></script>
+<script src="script.js" defer></script>
+<script src="featuredslider.js" defer></script>
+
+
 </head>
 <body>
 
@@ -15,8 +34,7 @@
   <div class="site-header">
     <div class="header-left">
       <a href="index.html" class="site-logo">
-        <img src="https://methstreams.world/Buffstreams.world.jpg" 
-             alt="Site Logo" loading="lazy">
+        <img src="https://methstreams.world/Buffstreams.world.jpg" alt="Site Logo" fetchpriority="high" decoding="async">
       </a>
       <a href="index.html" class="home-icon" title="Home">
 		   <i class="fas fa-home"></i>
@@ -26,10 +44,10 @@
       </div>
     </div>
     <div class="header-right">
-      <a href="https://t.me/yourchannel" target="_blank" class="social-icon telegram" title="Join Telegram">
+      <a href="https://t.me/yourchannel" target="_blank" rel="noopener noreferrer nofollow" class="social-icon telegram" title="Join Telegram">
 		  <i class="fab fa-telegram"></i>
 	  </a>
-      <a href="https://discord.gg/yourserver" target="_blank" class="social-icon discord" title="Join Discord">
+      <a href="https://discord.gg/yourserver" target="_blank" rel="noopener noreferrer nofollow" class="social-icon discord" title="Join Discord">
 		  <i class="fab fa-discord"></i>
 	  </a>
     </div>
@@ -85,6 +103,7 @@
   
     <main id="matches-sections">
       <!-- Sections will be injected dynamically by JS -->
+	      <div class="loader"></div> <!-- Add a loader here -->
     </main>
   </div>
   
@@ -97,9 +116,5 @@
     </div>
   </div>
 
-  <script src="togglesearchbar.js"></script>
-  <script src="script.js"></script>
-  <!-- Add the script for the slider -->
-  <script src="featuredslider.js"></script>
 </body>
 </html>
