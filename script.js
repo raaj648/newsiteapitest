@@ -86,7 +86,7 @@ function buildPosterUrl(match) {
     if (match.poster) {
         const p = String(match.poster || "").trim();
         if (p.startsWith("http")) return p;
-        if (p.startsWith("/")) return `https://streamed.pk${p}.webp`;
+        if (p.startsWith("/")) return `https://streamed.pk${p.endsWith(".webp") ? p : p + ".webp"}`;
         return `https://streamed.pk/api/images/proxy/${p}.webp`;
     }
     return placeholder;
@@ -288,5 +288,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   await searchDataPromise;
   setupSearch();
 });
+
 
 
