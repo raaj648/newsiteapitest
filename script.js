@@ -20,6 +20,12 @@ const categoryPages = [
 ];
 
 const matchCategories = [
+{
+    id: "live-viewcount",
+    label: "🔥 Popular Live (by viewers)",
+    endpoint: "https://streamed.pk/api/matches/live/popular-viewcount",
+    sortByViewers: true // <— flag to handle sorting
+  },
   { id: "live", label: "🔥 Popular Live", endpoint: "https://streamed.pk/api/matches/live/popular" },
   { id: "football", label: "⚽ Popular Football", endpoint: "https://streamed.pk/api/matches/football/popular" },
   { id: "basketball", label: "🏀 Popular Basketball", endpoint: "https://streamed.pk/api/matches/basketball/popular" },
@@ -104,6 +110,39 @@ function createMatchCard(match) {
   const statusBadge = document.createElement("div");
   statusBadge.classList.add("status-badge", badgeType);
   statusBadge.textContent = badge;
+  
+  // === Views Badge (Top-Right Corner) ===
+if (match.viewers !== undefined) {
+  const viewersBadge = document.createElement("div");
+  viewersBadge.classList.add("viewers-badge");
+
+  // Format viewer count (e.g. 1450 → 1.5K)
+  const views =
+    match.viewers >= 1000
+      ? (match.viewers / 1000).toFixed(1).replace(/\.0$/, "") + "K"
+      : match.viewers;
+
+  // Inline Lucide Eye SVG
+  viewersBadge.innerHTML = `
+    <span>${views}</span>
+    <svg xmlns="http://www.w3.org/2000/svg" 
+         width="16" height="16" viewBox="0 0 24 24" 
+         fill="none" stroke="currentColor" stroke-width="2" 
+         stroke-linecap="round" stroke-linejoin="round" 
+         class="lucide-eye ml-1 w-4 h-4">
+      <path d="M2.062 12.348a1 1 0 0 1 0-.696 
+               10.75 10.75 0 0 1 19.876 0 
+               1 1 0 0 1 0 .696 
+               10.75 10.75 0 0 1-19.876 0"></path>
+      <circle cx="12" cy="12" r="3"></circle>
+    </svg>
+  `;
+
+  card.appendChild(viewersBadge);
+}
+
+
+  
   const info = document.createElement("div");
   info.classList.add("match-info");
   const title = document.createElement("div");
@@ -148,13 +187,20 @@ function loadTopCategories() {
   setupCarouselPagination(container, leftBtn, rightBtn);
 }
 
-async function loadMatchCategory({ id, label, endpoint }) {
+async function loadMatchCategory(category) {
+  const { id, label, endpoint, sortByViewers } = category;
+
   try {
     const res = await fetch(endpoint);
     if (!res.ok) throw new Error(`Failed to fetch ${label}`);
     const matches = await res.json();
     if (!matches || matches.length === 0) return;
-    matches.sort((a, b) => a.date - b.date);
+    if (category.sortByViewers) {
+  matches.sort((a, b) => (b.viewers || 0) - (a.viewers || 0));
+} else {
+  matches.sort((a, b) => a.date - b.date);
+}
+
     const section = document.createElement("section");
     const header = document.createElement("div");
     header.className = "section-header";
@@ -242,5 +288,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   await searchDataPromise;
   setupSearch();
 });
-
 
