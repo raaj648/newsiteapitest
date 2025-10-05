@@ -95,7 +95,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helve
 #match-header h1 { font-size: clamp(1.5rem, 3vw, 2rem); color: var(--text-primary); text-align: center; }
 #match-description { color: #fff; font-size: 1rem; line-height: 1.6; margin: 1rem 0 2rem 0; text-align: center; background: none; border: none; padding: 0; }
 .countdown { font-size: 1.2rem; margin-bottom: 20px; font-weight: bold; color: var(--accent-hover); text-align: center; }
-.back-button-styled { background: #111; border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; padding: 8px 14px; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px; letter-spacing: 0.5px; margin-bottom: 1rem; width: 100%;}
+.back-button-styled { background: #111; border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; padding: 8px 14px; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px; letter-spacing: 0.5px; margin-bottom: 1rem;}
 .back-button-styled:hover { background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--text-secondary); }
 .back-button-styled .separator { color: var(--accent-red); }
 #sources-summary { font-size: 0.9rem; color: var(--text-secondary); font-style: italic; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
@@ -213,4 +213,5 @@ padding: 0.65rem 0.4rem;
 }
 
 }
+
 
