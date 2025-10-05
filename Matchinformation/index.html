@@ -3,82 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="page-title">Streamed Matches</title>
-  <link rel="stylesheet" href="https://raaj648.github.io/newsiteapitest/style.css">
-	<link rel="stylesheet" href="style.css">
-	<script src="https://raaj648.github.io/newsiteapitest/togglesearchbar.js" defer></script>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
+  <title>Loading Match...</title>
+  
+  <link rel="preconnect" href="https://streamed.pk" crossorigin>
+  <link rel="dns-prefetch" href="//streamed.pk">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 
-	<!-- Sticky Header -->
+</head>
+<body class="dark-theme">
+
+  <!-- Sticky Header -->
   <div class="site-header">
     <div class="header-left">
-      <!-- Logo (desktop only) -->
-      <a href="index.html" class="site-logo">
-        <img src="https://methstreams.world/Buffstreams.world.jpg" 
-             alt="Site Logo" loading="lazy">
-      </a>
-
-      <!-- Home icon -->
-      <a href="index.html" class="home-icon" title="Home">
-		   <i class="fas fa-home"></i>
-	  </a>
-
-      <!-- Search -->
+      <a href="../index.html" class="site-logo"><img src="https://methstreams.world/Buffstreams.world.jpg" alt="Site Logo" fetchpriority="high" decoding="async"></a>
+      <a href="../index.html" class="header-btn" title="Home">Home</a>
       <div class="search-container header-search">
         <input type="text" id="search-input" placeholder="Search matches..." autocomplete="off">
       </div>
     </div>
-
-    <!-- Right icons -->
     <div class="header-right">
-      <a href="https://t.me/yourchannel" target="_blank" class="social-icon telegram" title="Join Telegram">
-		  <i class="fab fa-telegram"></i>
-	  </a>
-      <a href="https://discord.gg/yourserver" target="_blank" class="social-icon discord" title="Join Discord">
-		  <i class="fab fa-discord"></i>
-	  </a>
+      <a href="https://discord.gg/yourserver" target="_blank" rel="noopener noreferrer nofollow" class="header-btn header-btn-discord" title="Join Discord">Join Discord</a>
     </div>
   </div>
-  <!-- Search Overlay -->
-  
 
-  <!-- Match Info Content -->
-  <main class="match-info-container">
-    <h1 id="match-title">Loading match...</h1>
-    <p id="match-description"></p>
-
-    <!-- Back Button -->
-    <button id="back-button" class="back-btn">⬅ Back</button>
-
-    <!-- Countdown -->
-    <div id="countdown-section" class="countdown hidden"></div>
-
-    <!-- Streams Section -->
-    <div id="streams-section">
-      <h2>Available Streams</h2>
-      <div id="streams-container"></div>
-    </div>
-  </main>
-  
-  <!-- Search Overlay -->
-<div id="search-overlay">
-  <div class="search-overlay-content">
-    <button id="search-close">&times;</button>
-    <input type="text" id="overlay-search-input" placeholder="Search matches..." autocomplete="off">
-    <div id="overlay-search-results"></div>
+  <!-- Main Content -->
+  <div class="fullpage">
+    <main class="match-details-container">
+      <div id="match-header">
+        <h1 id="match-title"><div class="loader-text"></div></h1>
+      </div>
+      <p id="match-description"></p>
+      
+      <div id="countdown-section" class="countdown hidden"></div>
+      
+      <!-- Streams Section -->
+      <section id="streams-section">
+        <!-- ✅ MODIFIED: Removed the "streams-header" div wrapper -->
+        <button id="back-button" class="back-button-styled">
+          <span>BCK</span><span class="separator">•</span><span>Back</span>
+        </button>
+        <p id="sources-summary"></p>
+        
+        <div id="streams-container">
+          <div class="loader"></div>
+        </div>
+        
+        <button id="show-all-sources-btn" class="show-all-btn hidden"></button>
+      </section>
+    </main>
   </div>
-</div>
 
+  <!-- Search Overlay -->
+  <div id="search-overlay">
+    <div class="search-overlay-content">
+      <button id="search-close">&times;</button>
+      <input type="text" id="overlay-search-input" placeholder="Search matches..." autocomplete="off">
+      <div id="overlay-search-results"></div>
+    </div>
+  </div>
   
-  <script src="script.js" defer></script>
 </body>
 </html>
-
-
-
-
-
-
-
