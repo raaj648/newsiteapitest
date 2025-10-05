@@ -148,7 +148,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helve
   
   /* Make the title a bit smaller */
   #match-header h1 {
-     font-size: 1.4rem;
+     font-size: 1.3rem;
   }
 
   /* Make the description text smaller */
@@ -176,7 +176,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helve
   .fullpage {
     padding: 0 0.5rem;
   }
-  
+	.header-search input {
+	  max-width: 150px;
+    max-height: 35px;
+	  
+  }
+  .header-left {
+	  gap: 5px;
+	  
+  }
+	
   /* Stack the source name and stream count for better fit */
   .source-header {
     
@@ -213,6 +222,7 @@ padding: 0.65rem 0.4rem;
 }
 
 }
+
 
 
 
