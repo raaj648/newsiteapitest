@@ -119,7 +119,7 @@
         </div>
       </div>
       <div class="date-time">${formatMatchDate(match.date)}</div>
-      <a class="watch-btn" href="/match/${encodeURIComponent(match.id)}">Watch Now</a>
+      <a class="watch-btn" href="https://raaj648.github.io/newsiteapitest/Matchinformation/?id=${encodeURIComponent(match.id)}">Watch Now</a>
     `;
 
     slider.appendChild(slide);
@@ -196,3 +196,4 @@
     loadFeaturedMatches();
   });
 })();
+
