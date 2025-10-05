@@ -10,6 +10,10 @@
   --accent-hover: #0d47a1;
   --border-color: #262626;
   --shadow-color: rgba(0,0,0,0.05);
+
+  /* === VISIBILITY FIX: Theme-aware placeholder colors === */
+  --placeholder-bg: #e2e8f0; /* Light grey for light theme */
+  --shimmer-color: rgba(0, 0, 0, 0.1); /* Darker shimmer for light theme */
 }
 
 body.dark-theme {
@@ -21,6 +25,10 @@ body.dark-theme {
   --accent-hover: #58a6ff;
   --border-color: #262626;
   --shadow-color: rgba(0,0,0,0.2);
+
+  /* === VISIBILITY FIX: Theme-aware placeholder colors === */
+  --placeholder-bg: #262626; /* Dark grey for dark theme */
+  --shimmer-color: rgba(255, 255, 255, 0.1); /* Lighter shimmer for dark theme */
 }
 
 /* ================================== */
@@ -63,7 +71,17 @@ h1 { font-size: clamp(20px, 2.5vw, 28px); color: #c9d1d9; }
 /* Match Card */
 .match-card { flex: 0 0 200px; max-width: 200px; overflow: hidden; cursor: pointer; transition: transform 0.2s ease; position: relative; display: flex; flex-direction: column; /* REMOVED MARGIN-LEFT */ }
 .match-card:hover { transform: translateY(-4px); }
-.match-poster { width: 100%; height: 120px; object-fit: cover; background: #ddd; display: block; border-radius: .5rem;}
+
+.match-poster {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  /* === VISIBILITY FIX: Use placeholder variable === */
+  background-color: var(--placeholder-bg); 
+  display: block;
+  border-radius: .5rem;
+  aspect-ratio: 200 / 120;
+}
 
 /* Status Badge */
 .status-badge { position: absolute; top: 10px; left: 10px; background: #DC2626; color: #fff; padding: 2px 4px; border-radius: 9999px; font-size: 12px; font-weight: bold; animation: pulse 1.5s infinite; }
@@ -82,7 +100,7 @@ h1 { font-size: clamp(20px, 2.5vw, 28px); color: #c9d1d9; }
 @media (max-width: 480px) { .category-card { flex: 0 0 100px; font-size: 14px; height: 80px; } }
 
 /* Responsive */
-@media (max-width: 1024px) { .match-card { flex: 0 0 195px; max-width: 180px; } .match-poster { height: auto; } }
+@media (max-width: 1024px) { .match-card { flex: 0 0 195px; max-width: 180px; } .match-poster { height: auto; } /* This is now safe because of aspect-ratio */ }
 @media (max-width: 768px) { .fullpage { padding: 0 1rem; } .match-card { flex: 0 0 45%; max-width: 170px; } }
 @media (max-width: 480px) { .fullpage { padding: 0 0.5rem; } .match-card { flex: 0 0 90%; max-width: 160px; } }
 
@@ -113,9 +131,6 @@ h1 { font-size: clamp(20px, 2.5vw, 28px); color: #c9d1d9; }
 .social-icon.discord i:hover { color: #404EED; }
 @media (max-width: 768px) { .site-logo { display: none; } .header-search { max-width: 100%; } .site-header { padding: 8px 12px; } .social-icon { font-size: 18px; } }
 
-
-
-
 .viewers-badge {
   position: absolute;
   top: 10px;
@@ -138,3 +153,33 @@ h1 { font-size: clamp(20px, 2.5vw, 28px); color: #c9d1d9; }
   opacity: 1;
 }
 
+/* ================================== */
+/* === LAZY LOAD PLACEHOLDER      === */
+/* ================================== */
+.lazy-placeholder {
+  position: relative;
+  overflow: hidden;
+}
+
+.lazy-placeholder::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  transform: skewX(-20deg);
+  /* === VISIBILITY FIX: Use theme-aware shimmer color === */
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    var(--shimmer-color),
+    transparent
+  );
+  animation: shimmer 1.8s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@keyframes shimmer {
+  0% { left: -150%; }
+  100% { left: 150%; }
+}
