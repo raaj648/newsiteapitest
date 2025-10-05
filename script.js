@@ -1,5 +1,5 @@
 // =================================================================================
-// SCRIPT.JS - WITH PARALLEL FETCHING & ROBUST LAZY LOADING
+// SCRIPT.JS - DARK THEME ONLY
 // =================================================================================
 
 // ---------------------------
@@ -156,7 +156,7 @@ function loadTopCategories() {
 
 function renderMatchCategory(categoryData) {
   const { label, matches } = categoryData;
-  if (!matches || matches.length === 0) return; // Skip rendering if no matches
+  if (!matches || matches.length === 0) return;
 
   const section = document.createElement("section");
   const header = document.createElement("div");
@@ -199,7 +199,7 @@ function initiateDelayedImageLoading() {
 }
 
 // ---------------------------
-// SEARCH FUNCTIONALITY & THEME
+// SEARCH FUNCTIONALITY
 // ---------------------------
 async function fetchAllMatchesForSearch() {
   try {
@@ -232,59 +232,46 @@ function setupSearch() {
   overlayInput.addEventListener("keydown", (e) => { if (e.key === "Enter") { const q = overlayInput.value.trim(); if (q) window.location.href = `https://raaj648.github.io/newsiteapitest/SearchResult/?q=${encodeURIComponent(q)}`; } });
 }
 
-function setupTheme() {
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    if (prefersDark) {
-        document.body.classList.add("dark-theme");
-    }
-}
-window.toggleTheme = () => {
-    document.body.classList.toggle("dark-theme");
-}
+/* === THEME FIX: All theme-related JS has been removed === */
 
 
 // ---------------------------
 // INITIALIZE EVERYTHING ON PAGE LOAD
 // ---------------------------
 document.addEventListener("DOMContentLoaded", async () => {
-  setupTheme();
+  // The theme is now set in the HTML, so setupTheme() is no longer needed.
   const searchDataPromise = fetchAllMatchesForSearch();
   loadTopCategories();
   
   const mainLoader = document.querySelector("#matches-sections > .loader");
 
-  // === PERFORMANCE: Fetch all category data in parallel ===
   const categoryPromises = matchCategories.map(async (category) => {
     try {
       const res = await fetch(category.endpoint);
-      if (!res.ok) return null; // Return null on failure
+      if (!res.ok) return null;
       const matches = await res.json();
       if (category.sortByViewers) {
         matches.sort((a, b) => (b.viewers || 0) - (a.viewers || 0));
       } else {
         matches.sort((a, b) => a.date - b.date);
       }
-      return { ...category, matches }; // Return category info with matches
+      return { ...category, matches };
     } catch (err) {
       console.error(`Error fetching ${category.label}:`, err);
-      return null; // Return null on error
+      return null;
     }
   });
 
-  // Wait for all fetches to complete
   const categoriesWithMatches = await Promise.all(categoryPromises);
   
-  // Now that all data is here, remove the main loader
   if (mainLoader) mainLoader.remove();
 
-  // Render all the fetched sections
   categoriesWithMatches.forEach(categoryData => {
-    if (categoryData) { // Only render if fetch was successful
+    if (categoryData) {
       renderMatchCategory(categoryData);
     }
   });
   
-  // Set up the listener to start loading images on the first user interaction
   const interactionEvents = ['scroll', 'mousemove', 'touchstart', 'click'];
   const triggerDelayedLoad = () => {
       initiateDelayedImageLoading();
@@ -297,7 +284,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.addEventListener(event, triggerDelayedLoad, { passive: true, once: true })
   );
 
-  // Wait for search data and then set up search functionality
   await searchDataPromise;
   setupSearch();
 });
