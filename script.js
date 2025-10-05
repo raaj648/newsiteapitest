@@ -1,5 +1,5 @@
 // =================================================================================
-// SCRIPT.JS - FINAL POLISHED VERSION
+// SCRIPT.JS - WITH PARALLEL FETCHING & ROBUST LAZY LOADING
 // =================================================================================
 
 // ---------------------------
@@ -24,14 +24,12 @@ const matchCategories = [
     id: "live-viewcount",
     label: "🔥 Popular Live (by viewers)",
     endpoint: "https://streamed.pk/api/matches/live/popular-viewcount",
-    sortByViewers: true // <— flag to handle sorting
+    sortByViewers: true
   },
   { id: "live", label: "🔥 Popular Live", endpoint: "https://streamed.pk/api/matches/live/popular" },
   { id: "football", label: "⚽ Popular Football", endpoint: "https://streamed.pk/api/matches/football/popular" },
   { id: "basketball", label: "🏀 Popular Basketball", endpoint: "https://streamed.pk/api/matches/basketball/popular" },
   { id: "tennis", label: "🎾 Popular Tennis", endpoint: "https://streamed.pk/api/matches/tennis/popular" },
-  
-  
   { id: "cricket", label: "🏏 Popular Cricket", endpoint: "https://streamed.pk/api/matches/cricket/popular" },
   { id: "mma", label: "🥋 Popular MMA", endpoint: "https://streamed.pk/api/matches/mma/popular" },
   { id: "hockey", label: "🏒 Popular Hockey", endpoint: "https://streamed.pk/api/matches/hockey/popular" },
@@ -39,36 +37,14 @@ const matchCategories = [
   { id: "boxing", label: "🥊 Popular Boxing", endpoint: "https://streamed.pk/api/matches/boxing/popular" }
 ];
 
-// Preloader for carousels
-const imagePreloader = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const container = entry.target;
-            const images = container.querySelectorAll('img[loading="lazy"]');
-            for (let i = 0; i < Math.min(images.length, 5); i++) {
-                images[i].removeAttribute('loading');
-            }
-            observer.unobserve(container);
-        }
-    });
-}, { rootMargin: "200px" });
-
 
 // ---------------------------
 // REUSABLE HELPER FUNCTIONS
 // ---------------------------
-
 function setupCarouselPagination(container, leftBtn, rightBtn) {
-  // NEW: Scroll by the visible width of the container for a "page turn" effect
   const getScrollStep = () => container.clientWidth;
-
-  leftBtn.addEventListener("click", () => {
-    container.scrollBy({ left: -getScrollStep(), behavior: "smooth" });
-  });
-
-  rightBtn.addEventListener("click", () => {
-    container.scrollBy({ left: getScrollStep(), behavior: "smooth" });
-  });
+  leftBtn.addEventListener("click", () => container.scrollBy({ left: -getScrollStep(), behavior: "smooth" }));
+  rightBtn.addEventListener("click", () => container.scrollBy({ left: getScrollStep(), behavior: "smooth" }));
 }
 
 function formatDateTime(timestamp) {
@@ -92,56 +68,47 @@ function buildPosterUrl(match) {
     return placeholder;
 }
 
-
 // ---------------------------
 // DOM CREATION FUNCTIONS
 // ---------------------------
 
-function createMatchCard(match) {
+function createMatchCard(match, options = {}) {
+  const lazyLoad = options.lazyLoad !== false; 
+
   const card = document.createElement("div");
   card.classList.add("match-card");
+  
   const poster = document.createElement("img");
   poster.classList.add("match-poster");
-  poster.src = buildPosterUrl(match);
+  
+  if (lazyLoad) {
+    poster.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+    poster.classList.add("lazy-placeholder");
+    poster.dataset.src = buildPosterUrl(match);
+  } else {
+    poster.src = buildPosterUrl(match);
+  }
+  
   poster.alt = match.title || "Match Poster";
-  poster.loading = "lazy";
-  poster.onerror = () => { poster.src = "https://methstreams.world/mysite.jpg"; };
+
+  poster.onerror = () => {
+    poster.onerror = null; 
+    poster.src = "https://methstreams.world/mysite.jpg"; 
+    poster.classList.remove('lazy-placeholder'); 
+  };
+  
   const { badge, badgeType, meta } = formatDateTime(match.date);
   const statusBadge = document.createElement("div");
   statusBadge.classList.add("status-badge", badgeType);
   statusBadge.textContent = badge;
   
-  // === Views Badge (Top-Right Corner) ===
-if (match.viewers !== undefined) {
-  const viewersBadge = document.createElement("div");
-  viewersBadge.classList.add("viewers-badge");
-
-  // Format viewer count (e.g. 1450 → 1.5K)
-  const views =
-    match.viewers >= 1000
-      ? (match.viewers / 1000).toFixed(1).replace(/\.0$/, "") + "K"
-      : match.viewers;
-
-  // Inline Lucide Eye SVG
-  viewersBadge.innerHTML = `
-    <span>${views}</span>
-    <svg xmlns="http://www.w3.org/2000/svg" 
-         width="16" height="16" viewBox="0 0 24 24" 
-         fill="none" stroke="currentColor" stroke-width="2" 
-         stroke-linecap="round" stroke-linejoin="round" 
-         class="lucide-eye ml-1 w-4 h-4">
-      <path d="M2.062 12.348a1 1 0 0 1 0-.696 
-               10.75 10.75 0 0 1 19.876 0 
-               1 1 0 0 1 0 .696 
-               10.75 10.75 0 0 1-19.876 0"></path>
-      <circle cx="12" cy="12" r="3"></circle>
-    </svg>
-  `;
-
-  card.appendChild(viewersBadge);
-}
-
-
+  if (match.viewers !== undefined) {
+    const viewersBadge = document.createElement("div");
+    viewersBadge.classList.add("viewers-badge");
+    const views = match.viewers >= 1000 ? (match.viewers / 1000).toFixed(1).replace(/\.0$/, "") + "K" : match.viewers;
+    viewersBadge.innerHTML = `<span>${views}</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-eye ml-1 w-4 h-4"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+    card.appendChild(viewersBadge);
+  }
   
   const info = document.createElement("div");
   info.classList.add("match-info");
@@ -168,7 +135,6 @@ if (match.viewers !== undefined) {
 // ---------------------------
 // SECTION LOADING FUNCTIONS
 // ---------------------------
-
 function loadTopCategories() {
   const container = document.getElementById("categories-container");
   if (!container) return;
@@ -187,35 +153,50 @@ function loadTopCategories() {
   setupCarouselPagination(container, leftBtn, rightBtn);
 }
 
-async function loadMatchCategory(category) {
-  const { id, label, endpoint, sortByViewers } = category;
 
-  try {
-    const res = await fetch(endpoint);
-    if (!res.ok) throw new Error(`Failed to fetch ${label}`);
-    const matches = await res.json();
-    if (!matches || matches.length === 0) return;
-    if (category.sortByViewers) {
-  matches.sort((a, b) => (b.viewers || 0) - (a.viewers || 0));
-} else {
-  matches.sort((a, b) => a.date - b.date);
+function renderMatchCategory(categoryData) {
+  const { label, matches } = categoryData;
+  if (!matches || matches.length === 0) return; // Skip rendering if no matches
+
+  const section = document.createElement("section");
+  const header = document.createElement("div");
+  header.className = "section-header";
+  header.innerHTML = `<h2>${label}</h2><div class="pagination-buttons"><button aria-label="Scroll left for ${label}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg></button><button aria-label="Scroll right for ${label}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg></button></div>`;
+  const container = document.createElement("div");
+  container.className = "matches-container";
+  matches.forEach(match => container.appendChild(createMatchCard(match)));
+  section.append(header, container);
+  document.getElementById("matches-sections").appendChild(section);
+      
+  const [leftBtn, rightBtn] = header.querySelectorAll("button");
+  setupCarouselPagination(container, leftBtn, rightBtn);
 }
 
-    const section = document.createElement("section");
-    const header = document.createElement("div");
-    header.className = "section-header";
-    header.innerHTML = `<h2>${label}</h2><div class="pagination-buttons"><button aria-label="Scroll left for ${label}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg></button><button aria-label="Scroll right for ${label}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg></button></div>`;
-    const container = document.createElement("div");
-    container.className = "matches-container";
-    matches.forEach(match => container.appendChild(createMatchCard(match)));
-    section.append(header, container);
-    document.getElementById("matches-sections").appendChild(section);
-    imagePreloader.observe(container);
-    const [leftBtn, rightBtn] = header.querySelectorAll("button");
-    setupCarouselPagination(container, leftBtn, rightBtn);
-  } catch (err) { console.error(`Error loading section ${id}:`, err); }
-}
+// ---------------------------
+// DELAYED IMAGE LOADING
+// ---------------------------
 
+function initiateDelayedImageLoading() {
+  const lazyImages = document.querySelectorAll('img.lazy-placeholder');
+  if (lazyImages.length === 0) return;
+
+  const imageObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        img.src = img.dataset.src;
+        img.onload = () => {
+          img.classList.remove('lazy-placeholder');
+        };
+        observer.unobserve(img);
+      }
+    });
+  }, { rootMargin: "200px" }); 
+
+  lazyImages.forEach(img => {
+    imageObserver.observe(img);
+  });
+}
 
 // ---------------------------
 // SEARCH FUNCTIONALITY & THEME
@@ -243,7 +224,7 @@ function setupSearch() {
     if (!q) return;
     const filtered = allMatchesCache.filter(m => (m.title || "").toLowerCase().includes(q) || (m.league || "").toLowerCase().includes(q) || (m.teams?.home?.name || "").toLowerCase().includes(q) || (m.teams?.away?.name || "").toLowerCase().includes(q));
     filtered.slice(0, 12).forEach(match => {
-        const item = createMatchCard(match);
+        const item = createMatchCard(match, { lazyLoad: false });
         item.classList.replace("match-card", "search-result-item");
         overlayResults.appendChild(item);
     });
@@ -257,37 +238,66 @@ function setupTheme() {
         document.body.classList.add("dark-theme");
     }
 }
-// Make this function globally accessible for toggling
 window.toggleTheme = () => {
     document.body.classList.toggle("dark-theme");
 }
 
+
 // ---------------------------
 // INITIALIZE EVERYTHING ON PAGE LOAD
 // ---------------------------
-//
-// THIS IS THE CORRECTED CODE
-//
 document.addEventListener("DOMContentLoaded", async () => {
-  setupTheme(); // Set theme based on user preference
+  setupTheme();
   const searchDataPromise = fetchAllMatchesForSearch();
   loadTopCategories();
   
   const mainLoader = document.querySelector("#matches-sections > .loader");
 
-  // --- START OF FIX ---
-  // Use a for...of loop to process categories one by one, preserving order.
-  for (const category of matchCategories) {
-    await loadMatchCategory(category);
-  }
-  // --- END OF FIX ---
+  // === PERFORMANCE: Fetch all category data in parallel ===
+  const categoryPromises = matchCategories.map(async (category) => {
+    try {
+      const res = await fetch(category.endpoint);
+      if (!res.ok) return null; // Return null on failure
+      const matches = await res.json();
+      if (category.sortByViewers) {
+        matches.sort((a, b) => (b.viewers || 0) - (a.viewers || 0));
+      } else {
+        matches.sort((a, b) => a.date - b.date);
+      }
+      return { ...category, matches }; // Return category info with matches
+    } catch (err) {
+      console.error(`Error fetching ${category.label}:`, err);
+      return null; // Return null on error
+    }
+  });
 
-  if (mainLoader) mainLoader.remove();
+  // Wait for all fetches to complete
+  const categoriesWithMatches = await Promise.all(categoryPromises);
   
-  // Wait for search data and then set up the search functionality
+  // Now that all data is here, remove the main loader
+  if (mainLoader) mainLoader.remove();
+
+  // Render all the fetched sections
+  categoriesWithMatches.forEach(categoryData => {
+    if (categoryData) { // Only render if fetch was successful
+      renderMatchCategory(categoryData);
+    }
+  });
+  
+  // Set up the listener to start loading images on the first user interaction
+  const interactionEvents = ['scroll', 'mousemove', 'touchstart', 'click'];
+  const triggerDelayedLoad = () => {
+      initiateDelayedImageLoading();
+      interactionEvents.forEach(event => 
+          window.removeEventListener(event, triggerDelayedLoad, { passive: true })
+      );
+  };
+  
+  interactionEvents.forEach(event => 
+      window.addEventListener(event, triggerDelayedLoad, { passive: true, once: true })
+  );
+
+  // Wait for search data and then set up search functionality
   await searchDataPromise;
   setupSearch();
 });
-
-
-
