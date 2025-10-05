@@ -1,5 +1,5 @@
 // =================================================================================
-// SCRIPT.JS - Match Information Page (Final Version with Search)
+// SCRIPT.JS - Match Information Page (Final Version with Updated Countdown)
 // =================================================================================
 
 // ---------------------------
@@ -7,55 +7,42 @@
 // ---------------------------
 let allMatchesCache = [];
 
-// ✅ FULL FUNCTION: Replaced with the complete version from your homepage script.
 function createMatchCard(match, options = {}) {
-    const lazyLoad = options.lazyLoad !== false;
     const card = document.createElement("div");
-    card.classList.add("search-result-item"); // Use the correct class for overlay items
-
+    card.classList.add("search-result-item");
     const poster = document.createElement("img");
     poster.classList.add("match-poster");
-
-    // Simplified poster URL logic for search consistency
     const posterUrl = (match.teams?.home?.badge && match.teams?.away?.badge)
         ? `https://streamed.pk/api/images/poster/${match.teams.home.badge}/${match.teams.away.badge}.webp`
         : "https://methstreams.world/mysite.jpg";
-    
     poster.src = posterUrl;
     poster.alt = match.title || "Match Poster";
     poster.onerror = () => { poster.onerror = null; poster.src = "https://methstreams.world/mysite.jpg"; };
-    
     const { badge, badgeType, meta } = formatDateTime(match.date);
     const statusBadge = document.createElement("div");
     statusBadge.classList.add("status-badge", badgeType);
     statusBadge.textContent = badge;
-    
     const info = document.createElement("div");
     info.classList.add("match-info");
     const title = document.createElement("div");
     title.classList.add("match-title");
     title.textContent = match.title || "Untitled Match";
-    
     const metaRow = document.createElement("div");
     metaRow.classList.add("match-meta-row");
     const category = document.createElement("span");
     category.classList.add("match-category");
     category.textContent = match.category ? match.category.charAt(0).toUpperCase() + match.category.slice(1) : "Unknown";
-    
     const timeOrDate = document.createElement("span");
     timeOrDate.textContent = meta;
-
     metaRow.append(category, timeOrDate);
     info.append(title, metaRow);
     card.append(poster, statusBadge, info);
-
     card.addEventListener("click", () => {
         window.location.href = `?id=${match.id}`;
     });
     return card;
 }
 
-// ✅ NEW HELPER FUNCTION: Copied from homepage script, needed by createMatchCard.
 function formatDateTime(timestamp) {
     const date = new Date(timestamp), now = new Date();
     const isToday = date.toDateString() === now.toDateString();
@@ -65,49 +52,40 @@ function formatDateTime(timestamp) {
     return { badge: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }), badgeType: "date", meta: date.toLocaleTimeString("en-US", timeFormat) };
 }
 
-// Helper to set up the search overlay functionality.
 function setupSearch() {
   const searchInput = document.getElementById("search-input"),
         searchOverlay = document.getElementById("search-overlay"),
         overlayInput = document.getElementById("overlay-search-input"),
         overlayResults = document.getElementById("overlay-search-results"),
         searchClose = document.getElementById("search-close");
-
   if (!searchInput) return;
-
   searchInput.addEventListener("focus", () => {
     searchOverlay.style.display = "flex";
     overlayInput.value = searchInput.value;
     overlayInput.focus();
     overlayResults.innerHTML = "";
   });
-
   searchClose.addEventListener("click", () => { searchOverlay.style.display = "none"; });
   searchOverlay.addEventListener("click", (e) => {
     if (!e.target.closest(".search-overlay-content")) {
       searchOverlay.style.display = "none";
     }
   });
-
   overlayInput.addEventListener("input", function() {
     const q = this.value.trim().toLowerCase();
     overlayResults.innerHTML = "";
     if (!q) return;
-
     const filtered = allMatchesCache.filter(m => 
         (m.title || "").toLowerCase().includes(q) || 
         (m.league || "").toLowerCase().includes(q) || 
         (m.teams?.home?.name || "").toLowerCase().includes(q) || 
         (m.teams?.away?.name || "").toLowerCase().includes(q)
     );
-      
     filtered.slice(0, 12).forEach(match => {
-        // Use the new, full-featured createMatchCard function
         const item = createMatchCard(match, { lazyLoad: false });
         overlayResults.appendChild(item);
     });
   });
-
   overlayInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       const q = overlayInput.value.trim();
@@ -118,7 +96,6 @@ function setupSearch() {
   });
 }
 
-// Fetches all match data needed for the search overlay.
 async function fetchSearchData() {
   if (allMatchesCache.length > 0) return;
   try {
@@ -134,7 +111,7 @@ async function fetchSearchData() {
 }
 
 // ---------------------------
-// PAGE-SPECIFIC RENDER FUNCTIONS (Unchanged)
+// PAGE-SPECIFIC RENDER FUNCTIONS
 // ---------------------------
 function renderStreamRow(stream, index) {
     const row = document.createElement("a");
@@ -193,6 +170,7 @@ async function loadMatchDetails() {
         document.title = fullTitle;
         titleEl.textContent = fullTitle;
         descEl.textContent = `To watch ${match.title} streams, scroll down and choose a stream link of your choice. If there are no links or buttons, please wait for the timer to countdown until the event is live.`;
+        
         const matchDate = Number(match.date);
         if (matchDate > Date.now()) {
             countdownEl.classList.remove("hidden");
@@ -204,12 +182,24 @@ async function loadMatchDetails() {
                     window.location.reload();
                     return;
                 }
-                const hrs = String(Math.floor(diff / 3600000)).padStart(2, "0");
-                const mins = String(Math.floor((diff % 3600000) / 60000)).padStart(2, "0");
-                const secs = String(Math.floor((diff % 60000) / 1000)).padStart(2, "0");
-                countdownEl.textContent = `The event starts in: ${hrs}:${mins}:${secs}`;
+
+                // ✅ MODIFIED: Countdown Logic to include days
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hrs = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, "0");
+                const mins = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, "0");
+                const secs = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, "0");
+
+                let dayString = "";
+                if (days > 0) {
+                    dayString = `${days} day${days > 1 ? 's' : ''} `;
+                }
+                
+                countdownEl.textContent = `The event starts in ${dayString}${hrs}:${mins}:${secs}`;
+                // ✅ END MODIFICATION
+
             }, 1000);
         }
+        
         streamsContainer.innerHTML = "";
         if (match.sources && match.sources.length > 0) {
             const sourcePromises = match.sources.map(renderStreamSource);
