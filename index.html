@@ -24,6 +24,19 @@
 <!-- In index.html, replace your entire <style> block with this -->
 <style>
     :root{--bg-primary:#0a0a0a;--bg-secondary:#161b22;--text-primary:#c9d1d9;--text-secondary:#8b949e;--accent-primary:#2f81f7;--border-color:#262626;--shadow-color:rgba(0,0,0,.2);--accent-red:#e50914}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg-primary);color:var(--text-primary)}.fullpage{padding:0 1rem}header{text-align:center;margin-bottom:30px}h1{font-size:clamp(20px,2.5vw,28px);color:var(--text-primary)}.site-header{position:sticky;top:0;left:0;width:100%;background:var(--bg-primary);border-bottom:1px solid var(--border-color);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;z-index:1000;box-shadow:0 2px 6px var(--shadow-color);margin-bottom:15px}.header-left,.header-right{display:flex;align-items:center;gap:12px}.site-logo img{height:40px;border-radius:6px;display:block}.header-btn{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:6px;text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap;background-color:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color)}.header-btn-discord{background-color:#5865f2;color:#fff;border:1px solid #5865f2}.header-search{flex-grow:1;max-width:400px}.header-search input{background:var(--bg-secondary);color:var(--text-primary);padding:8px 12px;font-size:14px;border:2px solid var(--border-color);border-radius:6px;outline:0;width:100%}.featured-section{max-width:1100px;margin:0 auto;color:#fff;font-family:"Helvetica Neue",Arial,sans-serif}.categories-wrapper{display:flex;justify-content:center}.categories{display:flex;gap:10px;overflow-x:auto;padding:8px 4px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}.categories::-webkit-scrollbar{height:8px}.categories::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:8px}.slider-area{display:flex;align-items:center;gap:18px;margin-top:10px}.nav-arrow{background:rgba(255,255,255,.06);border:0;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.6)}.slider-container{flex:1;border:1px solid #262626;border-radius:.5rem;padding:24px;position:relative;box-shadow:0 8px 30px rgba(0,0,0,.6);overflow:hidden;min-height:320px}.desktop-only{display:flex}.section-header{display:flex;justify-content:space-between;align-items:center;margin:16px 0}.section-header h2{font-size:clamp(1.25rem,2vw,1.5rem);color:var(--text-primary)}.pagination-buttons{display:flex;gap:8px}.pagination-buttons button{border:1px solid var(--border-color);background:0 0;color:var(--text-secondary);width:32px;height:32px;border-radius:.5rem;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px var(--shadow-color)}.categories-container{display:flex;overflow-x:auto;scroll-behavior:smooth;padding:15px 4px;-ms-overflow-style:none;scrollbar-width:none;scroll-padding-inline:1rem}.categories-container::-webkit-scrollbar{display:none}.categories-container{gap:15px}
+	
+	@media (min-width: 1024px){
+	#sliderContainer{
+		min-height:344px;
+		min-width:900px;
+	}
+	}
+	@media (max-width: 480px){
+		#sliderContainer{
+		min-height:431px;
+		min-width:300px;
+	}
+	}
     
     /* === THE DEFINITIVE CLS FIX === */
     .countdown {min-height: 60px;}
@@ -131,6 +144,7 @@
   </div>
 </body>
 </html>
+
 
 
 
