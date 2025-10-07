@@ -6,27 +6,28 @@
   <title>Search Results</title>
   <meta name="description" content="Search for live football, cricket, basketball, and more streamed matches.">
   
-  <!-- === PERFORMANCE: Preconnect to the API server === -->
   <link rel="preconnect" href="https://streamed.pk" crossorigin>
   <link rel="dns-prefetch" href="//streamed.pk"> 
   
-  <!-- === PERFORMANCE: Single, combined stylesheet from parent directory === -->
-  <link rel="stylesheet" href="../style.css">
-  
-  <!-- === PERFORMANCE: Defer script loading === -->
-  <script src="search.js" defer></script>
+  <!-- === INLINE CRITICAL CSS === -->
+  <style>
+    :root{--bg-primary:#0a0a0a;--bg-secondary:#161b22;--text-primary:#c9d1d9;--accent-primary:#2f81f7;--border-color:#262626;--shadow-color:rgba(0,0,0,.2);--placeholder-bg:#262626;--shimmer-color:rgba(255,255,255,.1)}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg-primary);color:var(--text-primary)}.fullpage{padding:0 1rem}.site-header{position:sticky;top:0;left:0;width:100%;background:var(--bg-primary);border-bottom:1px solid var(--border-color);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;z-index:1000;box-shadow:0 2px 6px var(--shadow-color);margin-bottom:15px}.header-left,.header-right{display:flex;align-items:center;gap:12px}.header-left{flex-grow:1;min-width:0}.site-logo img{height:40px;border-radius:6px;display:block}.header-btn{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:6px;text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap;background-color:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color)}.header-btn-discord{background-color:#5865f2;color:#fff;border-color:#5865f2}.header-search{flex-grow:1;max-width:400px}.header-search input{width:100%;background:var(--bg-secondary);color:var(--text-primary);padding:8px 12px;font-size:14px;border:2px solid var(--border-color);border-radius:6px;outline:none}.page-header{text-align:center;margin:10px 0 30px}.page-header h1{font-size:clamp(22px,3vw,32px);color:var(--text-primary);font-weight:700}.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;padding:0 4px}.match-card{background:var(--bg-secondary);border-radius:.5rem;overflow:hidden;position:relative}.match-poster{width:100%;height:120px;display:block;aspect-ratio:200/120}.lazy-placeholder{background-color:var(--placeholder-bg);position:relative;overflow:hidden}.lazy-placeholder::after{content:'';position:absolute;top:0;left:-150%;width:100%;height:100%;transform:skewX(-20deg);background-image:linear-gradient(90deg,transparent,var(--shimmer-color),transparent);animation:shimmer 1.8s infinite cubic-bezier(.4,0,.6,1)}@keyframes shimmer{100%{left:150%}}
+  </style>
 
+  <link rel="preload" href="search-style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="search-style.css"></noscript>
+  
+  <script src="search.js" defer></script>
 </head>
 <body class="dark-theme">
 
-  <!-- Sticky Header (Identical to Homepage) -->
+  <!-- Sticky Header -->
   <div class="site-header">
     <div class="header-left">
       <a href="../index.html" class="site-logo">
-        <img src="https://methstreams.world/Buffstreams.world.jpg" alt="Site Logo" fetchpriority="high" decoding="async">
+        <img src="https://methstreams.world/Buffstreams.world.jpg" alt="Site Logo" width="135" height="40" fetchpriority="high" decoding="async">
       </a>
       <a href="../index.html" class="header-btn" title="Home">Home</a>
-      <!-- Search form for this page -->
       <form id="search-form" class="search-container header-search">
          <input type="text" id="search-input" placeholder="Search again..." autocomplete="off">
       </form>
@@ -39,17 +40,21 @@
   <div class="fullpage">
     <main>
       <header class="page-header">
-        <h1 id="results-title">🔍 Search Results</h1>
+        <h1 id="results-title">🔍 Searching...</h1>
       </header>
   
-      <!-- Results will be injected here by search.js -->
       <div id="search-results" class="results-grid">
-        <div class="loader"></div>
+        <!-- === SKELETON LOADER FOR RESULTS === -->
+        <div class="match-card"><div class="match-poster lazy-placeholder"></div></div>
+        <div class="match-card"><div class="match-poster lazy-placeholder"></div></div>
+        <div class="match-card"><div class="match-poster lazy-placeholder"></div></div>
+        <div class="match-card"><div class="match-poster lazy-placeholder"></div></div>
+        <div class="match-card"><div class="match-poster lazy-placeholder"></div></div>
+        <div class="match-card"><div class="match-poster lazy-placeholder"></div></div>
       </div>
     </main>
   </div>
 
-  <!-- ✅ ADDED: Search Overlay HTML (copied from homepage) -->
   <div id="search-overlay">
     <div class="search-overlay-content">
       <button id="search-close">&times;</button>
@@ -57,6 +62,5 @@
       <div id="overlay-search-results"></div>
     </div>
   </div>
-
 </body>
 </html>
