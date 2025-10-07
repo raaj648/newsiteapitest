@@ -64,7 +64,12 @@ body {
 .header-right a {
 	margin-left: 5px;
 }
-
+#categories-section {
+	min-height: 178px;
+}
+#sliderContainer{
+	min-height: 416px;
+}
 /* ================================== */
 /* === CARDS (MATCH & CATEGORY) === */
 /* ================================== */
@@ -192,6 +197,9 @@ body {
   .header-left, .header-right{
 	  gap: 7px;
   }
+	##sliderContainer {
+		min-height: 447px;
+	}
 }
 
 
@@ -254,4 +262,5 @@ body {
 .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; padding: 0 4px; }
 .no-results { grid-column: 1 / -1; text-align: center; color: var(--text-secondary); font-size: 1.1rem; padding: 60px 20px; background-color: var(--bg-secondary); border-radius: 0.5rem; border: 1px solid var(--border-color); }
 @media (max-width: 480px) { .results-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.75rem; } }
+
 
