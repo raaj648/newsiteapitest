@@ -1,13 +1,9 @@
 // =================================================================================
-// SEARCH.JS - Search Results Page Logic with Overlay and Live Search
+// SEARCH.JS - Search Results Page Logic (Optimized for Skeletons)
 // =================================================================================
 
-// ---------------------------
-// GLOBAL CACHE & HELPERS
-// ---------------------------
 let allMatchesCache = [];
 
-// Debounce helper to prevent excessive function calls while typing
 function debounce(func, delay) {
   let timeout;
   return function(...args) {
@@ -16,9 +12,7 @@ function debounce(func, delay) {
   };
 }
 
-// ---------------------------
-// REUSABLE DOM/FORMATTING FUNCTIONS (from homepage)
-// ---------------------------
+// Reusable DOM/formatting functions
 function formatDateTime(timestamp) {
   const date = new Date(timestamp), now = new Date();
   const isToday = date.toDateString() === now.toDateString();
@@ -40,14 +34,13 @@ function buildPosterUrl(match) {
   return placeholder;
 }
 
-function createMatchCard(match, options = {}) {
-  const lazyLoad = options.lazyLoad !== false;
+function createMatchCard(match, isLazy = true) {
   const card = document.createElement("div");
   card.classList.add("match-card");
 
   const poster = document.createElement("img");
   poster.classList.add("match-poster");
-  if (lazyLoad) {
+  if (isLazy) {
     poster.classList.add("lazy-placeholder");
     poster.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
     poster.dataset.src = buildPosterUrl(match);
@@ -55,11 +48,7 @@ function createMatchCard(match, options = {}) {
     poster.src = buildPosterUrl(match);
   }
   poster.alt = match.title || "Match Poster";
-  poster.onerror = () => {
-    poster.onerror = null;
-    poster.src = "https://methstreams.world/mysite.jpg";
-    poster.classList.remove('lazy-placeholder');
-  };
+  poster.onerror = () => { poster.onerror = null; poster.src = "https://methstreams.world/mysite.jpg"; poster.classList.remove('lazy-placeholder'); };
 
   const { badge, badgeType, meta } = formatDateTime(match.date);
   const statusBadge = document.createElement("div");
@@ -85,15 +74,13 @@ function createMatchCard(match, options = {}) {
   card.append(poster, statusBadge, info);
 
   card.addEventListener("click", () => {
-    window.location.href = `https://raaj648.github.io/newsiteapitest/Matchinformation/?id=${match.id}`;
+    window.location.href = `../Matchinformation/?id=${match.id}`;
   });
 
   return card;
 }
 
-// ---------------------------
-// SEARCH & PAGE-SPECIFIC FUNCTIONS
-// ---------------------------
+// Search & Page-specific Functions
 async function fetchAllMatches() {
   if (allMatchesCache.length > 0) return;
   try {
@@ -112,6 +99,8 @@ async function fetchAllMatches() {
 function renderResults(query) {
   const container = document.getElementById("search-results");
   const title = document.getElementById("results-title");
+  
+  // === MODIFICATION: Clear skeletons/previous results ===
   container.innerHTML = ""; 
 
   if (!query) {
@@ -135,7 +124,7 @@ function renderResults(query) {
   }
   
   const fragment = document.createDocumentFragment();
-  filtered.forEach(match => fragment.appendChild(createMatchCard(match, { lazyLoad: true })));
+  filtered.forEach(match => fragment.appendChild(createMatchCard(match)));
   container.appendChild(fragment);
 
   initiateDelayedImageLoading();
@@ -153,11 +142,10 @@ function initiateDelayedImageLoading() {
                 observer.unobserve(img);
             }
         });
-    }, { rootMargin: "200px" });
+    }, { rootMargin: "1200px" }); // Using aggressive margin from homepage
     lazyImages.forEach(img => imageObserver.observe(img));
 }
 
-// ✅ NEW: setupSearch function from homepage script
 function setupSearch() {
   const searchInput = document.getElementById("search-input"),
         searchOverlay = document.getElementById("search-overlay"),
@@ -171,7 +159,6 @@ function setupSearch() {
     searchOverlay.style.display = "flex";
     overlayInput.value = searchInput.value;
     overlayInput.focus();
-    // Trigger search in overlay if there's already text
     if (searchInput.value.trim()) overlayInput.dispatchEvent(new Event('input'));
   });
 
@@ -184,39 +171,25 @@ function setupSearch() {
     const q = this.value.trim().toLowerCase();
     overlayResults.innerHTML = "";
     if (!q) return;
-
-    const filtered = allMatchesCache.filter(m => 
-        (m.title || "").toLowerCase().includes(q) || 
-        (m.league || "").toLowerCase().includes(q) || 
-        (m.teams?.home?.name || "").toLowerCase().includes(q) || 
-        (m.teams?.away?.name || "").toLowerCase().includes(q)
-    );
-      
+    const filtered = allMatchesCache.filter(m => (m.title || "").toLowerCase().includes(q) || (m.league || "").toLowerCase().includes(q) || (m.teams?.home?.name || "").toLowerCase().includes(q) || (m.teams?.away?.name || "").toLowerCase().includes(q));
     filtered.slice(0, 12).forEach(match => {
-        const item = createMatchCard(match, { lazyLoad: false });
+        const item = createMatchCard(match, false); // No lazy load in overlay
         item.classList.replace("match-card", "search-result-item");
         overlayResults.appendChild(item);
     });
   });
 
-  // ✅ MODIFIED: Enter key logic for this page
   overlayInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       const q = overlayInput.value.trim();
       if (q) {
-        // Instead of redirecting, just update the current URL and page content
-        window.history.pushState({}, '', `?q=${encodeURIComponent(q)}`);
-        searchInput.value = q;
-        renderResults(q);
-        searchOverlay.style.display = "none";
+        window.location.href = `?q=${encodeURIComponent(q)}`; // Full redirect for new search
       }
     }
   });
 }
 
-// ---------------------------
-// INITIALIZE PAGE
-// ---------------------------
+// Initialize Page
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
   const query = params.get("q") || "";
@@ -226,27 +199,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await fetchAllMatches();
   
-  // ✅ Call setupSearch to enable the overlay
   setupSearch();
   
-  if (query) {
-    renderResults(query);
-  } else {
-    document.getElementById("results-title").textContent = "🔍 Please enter a search term";
-    document.querySelector("#search-results .loader")?.remove();
-  }
+  renderResults(query);
 
-  // ✅ NEW: Live search from the main header input
-  const debouncedRender = debounce(renderResults, 300); // 300ms delay
+  const debouncedRender = debounce((newQuery) => {
+      window.history.replaceState({}, '', newQuery ? `?q=${encodeURIComponent(newQuery)}` : window.location.pathname);
+      renderResults(newQuery);
+  }, 300);
   
   searchInput.addEventListener("input", () => {
-      const liveQuery = searchInput.value.trim();
-      // Update URL dynamically as user types for shareable links
-      const newUrl = liveQuery ? `?q=${encodeURIComponent(liveQuery)}` : window.location.pathname;
-      window.history.replaceState({}, '', newUrl);
-      debouncedRender(liveQuery);
+      debouncedRender(searchInput.value.trim());
   });
   
-  // The form submit is now just a fallback, live search is primary
   document.getElementById("search-form").addEventListener("submit", (e) => e.preventDefault());
 });
