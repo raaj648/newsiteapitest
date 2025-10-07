@@ -52,9 +52,13 @@
     }
   }
 
-  function renderCategories() {
+// In main.js, inside the first (function(){...}) block for the slider
+// Replace your existing renderCategories and renderSlide functions
+
+function renderCategories() {
     const container = document.getElementById("categories");
-    container.innerHTML = "";
+    container.innerHTML = ""; // This clears the skeleton tabs correctly
+
     orderedCategoryKeys.forEach(cat => {
       const btn = document.createElement("button");
       btn.className = "cat-btn";
@@ -67,7 +71,7 @@
       if (cat === currentCategory) btn.classList.add("active");
       container.appendChild(btn);
     });
-  }
+}
 
   function selectCategory(cat) {
     if (!categories[cat]) return;
@@ -79,11 +83,14 @@
 
   function renderSlide() {
     const slider = document.getElementById("slider");
-    slider.innerHTML = "";
+    // This is the key change: we clear the skeleton loader *just before* adding the new slide.
+    slider.innerHTML = ""; 
+
     if (!currentCategory || !categories[currentCategory] || categories[currentCategory].length === 0) {
       slider.innerHTML = `<div class="slide active"><div style="padding:30px;color:var(--text-secondary)">No matches for ${prettyCategoryName(currentCategory)}</div></div>`;
       return;
     }
+    
     const list = categories[currentCategory];
     currentIndex = (currentIndex + list.length) % list.length;
     const match = list[currentIndex];
@@ -91,13 +98,16 @@
     const away = match.teams?.away || {};
     const homeBadge = home.badge ? `${IMAGE_BASE_URL}${home.badge}.webp` : "";
     const awayBadge = away.badge ? `${IMAGE_BASE_URL}${away.badge}.webp` : "";
+
     const slide = document.createElement("div");
-    slide.className = "slide active";
-    slide.innerHTML = `<div class="slide-header"><span class="featured-label">Featured Match</span><div class="slide-category">${prettyCategoryName(match.category)}</div><div class="mobile-arrows mobile-only"><button class="nav-arrow" id="mobilePrev" aria-label="Previous match"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2"/></svg></button><button class="nav-arrow" id="mobileNext" aria-label="Next match"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2"/></svg></button></div></div><div id="countdown-${escapeId(match.id)}" class="countdown"></div><div class="match-row"><div class="home-section"><div class="team-name">${escapeHtml(home.name)}</div>${homeBadge?`<div class="team-logo"><img loading="lazy" src="${homeBadge}" alt="${escapeAttr(home.name)} logo"></div>`:""}</div><div class="vs-section"><div class="vs-block">VS</div></div><div class="away-section">${awayBadge?`<div class="team-logo"><img loading="lazy" src="${awayBadge}" alt="${escapeAttr(away.name)} logo"></div>`:""}<div class="team-name">${escapeHtml(away.name)}</div></div></div><div class="date-time">${formatMatchDate(match.date)}</div><a class="watch-btn" href="https://raaj648.github.io/newsiteapitest/Matchinformation/?id=${encodeURIComponent(match.id)}">Watch Now</a>`;
+    slide.className = "slide active"; // The 'active' class triggers the fade-in
+
+    slide.innerHTML = `<div class="slide-header"><span class="featured-label">Featured Match</span><div class="slide-category">${prettyCategoryName(match.category)}</div><div class="mobile-arrows mobile-only"><button class="nav-arrow" id="mobilePrev" aria-label="Previous match"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2"/></svg></button><button class="nav-arrow" id="mobileNext" aria-label="Next match"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2"/></svg></button></div></div><div id="countdown-${escapeId(match.id)}" class="countdown"></div><div class="match-row"><div class="home-section"><div class="team-name">${escapeHtml(home.name)}</div>${homeBadge?`<div class="team-logo"><img width="64" height="64" loading="lazy" src="${homeBadge}" alt="${escapeAttr(home.name)} logo"></div>`:""}</div><div class="vs-section"><div class="vs-block">VS</div></div><div class="away-section">${awayBadge?`<div class="team-logo"><img width="64" height="64" loading="lazy" src="${awayBadge}" alt="${escapeAttr(away.name)} logo"></div>`:""}<div class="team-name">${escapeHtml(away.name)}</div></div></div><div class="date-time">${formatMatchDate(match.date)}</div><a class="watch-btn" href="https://raaj648.github.io/newsiteapitest/Matchinformation/?id=${encodeURIComponent(match.id)}">Watch Now</a>`;
+
     slider.appendChild(slide);
     startCountdown(match);
     preloadNeighborImages();
-  }
+}
 
   function startCountdown(match) {
     if (countdownInterval) clearInterval(countdownInterval);
@@ -176,7 +186,27 @@
 
   function createMatchCard(match, options = {}) { const lazyLoad = options.lazyLoad !== false; const card = document.createElement("div"); card.classList.add("match-card"); const poster = document.createElement("img"); poster.classList.add("match-poster"); if (lazyLoad) { poster.loading = "lazy"; poster.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"; poster.classList.add("lazy-placeholder"); poster.dataset.src = buildPosterUrl(match); } else { poster.src = buildPosterUrl(match); } poster.alt = match.title || "Match Poster"; poster.onerror = () => { poster.onerror = null; poster.src = "https://methstreams.world/mysite.jpg"; poster.classList.remove('lazy-placeholder'); }; const { badge, badgeType, meta } = formatDateTime(match.date); const statusBadge = document.createElement("div"); statusBadge.classList.add("status-badge", badgeType); statusBadge.textContent = badge; if (match.viewers !== undefined) { const viewersBadge = document.createElement("div"); viewersBadge.classList.add("viewers-badge"); const views = match.viewers >= 1000 ? (match.viewers / 1000).toFixed(1).replace(/\.0$/, "") + "K" : match.viewers; viewersBadge.innerHTML = `<span>${views}</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>`; card.appendChild(viewersBadge); } const info = document.createElement("div"); info.classList.add("match-info"); const title = document.createElement("div"); title.classList.add("match-title"); title.textContent = match.title || "Untitled Match"; const metaRow = document.createElement("div"); metaRow.classList.add("match-meta-row"); const category = document.createElement("span"); category.classList.add("match-category"); category.textContent = match.category ? match.category.charAt(0).toUpperCase() + match.category.slice(1) : "Unknown"; const timeOrDate = document.createElement("span"); timeOrDate.textContent = meta; metaRow.append(category, timeOrDate); info.append(title, metaRow); card.append(poster, statusBadge, info); card.addEventListener("click", () => { window.location.href = `https://raaj648.github.io/newsiteapitest/Matchinformation/?id=${match.id}`; }); return card; }
 
-  function loadTopCategories() { const container = document.getElementById("categories-container"); if (!container) return; categoryPages.forEach(cat => { const card = document.createElement("div"); card.className = "category-card"; card.textContent = cat.name; card.addEventListener("click", () => { window.location.href = cat.link; }); container.appendChild(card); }); const section = document.getElementById("categories-section"); const leftBtn = section.querySelector("#cat-left"); const rightBtn = section.querySelector("#cat-right"); // ACCESSIBILITY FIX HERE
+  // in main.js, replace the entire loadTopCategories function
+function loadTopCategories() {
+    const container = document.getElementById("categories-container");
+    if (!container) return;
+
+    // Remove skeleton cards before adding real ones
+    container.querySelectorAll('.is-loading').forEach(el => el.remove());
+
+    categoryPages.forEach(cat => {
+        const card = document.createElement("div");
+        card.className = "category-card";
+        card.textContent = cat.name;
+        card.addEventListener("click", () => { window.location.href = cat.link; });
+        container.appendChild(card);
+    });
+
+    const section = document.getElementById("categories-section");
+    const leftBtn = section.querySelector("#cat-left");
+    const rightBtn = section.querySelector("#cat-right");
+    
+    // Accessibility Fix
     leftBtn.setAttribute('aria-label', 'Scroll categories left');
     rightBtn.setAttribute('aria-label', 'Scroll categories right');
 
@@ -241,3 +271,4 @@
   // Self-initiate
   initializePage();
 })();
+
