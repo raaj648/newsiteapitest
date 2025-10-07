@@ -24,14 +24,16 @@ body {
 /* === [RESTORED] CAROUSEL CONTAINER STYLES === */
 /* This fixes the vertical stacking of match cards. */
 /* ================================== */
+/* in style.css */
 .matches-container, .categories-container {
   display: flex;
   overflow-x: auto;
   scroll-behavior: smooth;
   padding: 15px 4px;
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
   scroll-padding-inline: 1rem;
+  min-height: 130px; /* <-- ADD min-height HERE AS WELL */
 }
 .matches-container::-webkit-scrollbar, .categories-container::-webkit-scrollbar { display: none; }
 .matches-container { gap: 1rem; }
