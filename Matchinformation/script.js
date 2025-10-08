@@ -115,8 +115,8 @@ function setupSearch() {
 function renderStreamRow(stream, index) {
     const row = document.createElement("a");
     row.className = "stream-row";
-    // NEW line
-row.href = `../Watchnow/?matchId=${source.id}&streamId=${stream.id}&source=${source.source}`;
+ // OLD line
+row.href = `Watchnow/?url=${encodeURIComponent(stream.embedUrl)}`;
     row.target = "_blank";
     const qualityTagClass = stream.hd ? "hd" : "sd";
     const qualityText = stream.hd ? "HD" : "SD";
@@ -283,4 +283,5 @@ document.addEventListener("DOMContentLoaded", () => {
     loadMatchDetails();
     setupSearch(); 
 });
+
 
