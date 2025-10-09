@@ -1,5 +1,5 @@
 // =================================================================================
-// SCRIPT.JS - Match Information Page (Corrected & Fully Optimized)
+// SCRIPT.JS - Match Information Page (Final Version for Hash-based URLs)
 // =================================================================================
 
 // ---------------------------
@@ -112,12 +112,17 @@ function setupSearch() {
 // ---------------------------
 // PAGE-SPECIFIC RENDER FUNCTIONS
 // ---------------------------
-function renderStreamRow(stream, index) {
+function renderStreamRow(stream, index, matchId, sourceName) {
     const row = document.createElement("a");
     row.className = "stream-row";
- // OLD line
-row.href = `Watchnow/?url=${encodeURIComponent(stream.embedUrl)}`;
-    row.target = "_blank";
+
+    // === THE ONLY CHANGE IS HERE ===
+    // Build the new hash-based URL that works on GitHub Pages
+    const quality = stream.hd ? 'hd' : 'sd';
+    const streamNumber = stream.streamNo;
+    row.href = `../Watch/#/${matchId}/${sourceName}/${quality}${streamNumber}`;
+    // ===============================
+    
     const qualityTagClass = stream.hd ? "hd" : "sd";
     const qualityText = stream.hd ? "HD" : "SD";
     const viewersHTML = stream.viewers > 0 
@@ -125,7 +130,6 @@ row.href = `Watchnow/?url=${encodeURIComponent(stream.embedUrl)}`;
         : '';
     const openLinkIcon = `<span class="open-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>`;
     
-    // === THIS IS THE CORRECTED LINE WITH THE WORLD ICON RESTORED ===
     const languageHTML = `<div class="stream-lang"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>${stream.language || "English"}</div>`;
     
     row.innerHTML = `
@@ -141,7 +145,7 @@ row.href = `Watchnow/?url=${encodeURIComponent(stream.embedUrl)}`;
     return row;
 }
 
-async function renderStreamSource(source) {
+async function renderStreamSource(source, matchId) {
     const sourceMeta = { alpha: "Most reliable (720p 30fps)", charlie: "Good backup", intel: "Large event coverage", admin: "Admin added streams", hotel: "Very high quality feeds", foxtrot: "Good quality, offers home/away feeds", delta: "Reliable backup", echo: "Great quality overall" };
     const description = sourceMeta[source.source.toLowerCase()] || "Reliable streams";
     try {
@@ -157,7 +161,7 @@ async function renderStreamSource(source) {
         sourceContainer.innerHTML = `<div class="source-header"><span class="source-name">${source.source.charAt(0).toUpperCase() + source.source.slice(1)}</span><span class="source-count">${streams.length} streams</span></div><small class="source-desc">✨ ${description}</small>`;
         
         const fragment = document.createDocumentFragment();
-        streams.forEach((stream, i) => fragment.appendChild(renderStreamRow(stream, i)));
+        streams.forEach((stream, i) => fragment.appendChild(renderStreamRow(stream, i, matchId, source.source)));
         sourceContainer.appendChild(fragment);
         
         return sourceContainer;
@@ -232,7 +236,7 @@ async function loadMatchDetails() {
         streamsContainer.innerHTML = ""; 
 
         if (match.sources && match.sources.length > 0) {
-            const sourcePromises = match.sources.map(renderStreamSource);
+            const sourcePromises = match.sources.map(source => renderStreamSource(source, match.id));
             const sourceElements = (await Promise.all(sourcePromises)).filter(Boolean);
             const totalSources = sourceElements.length;
 
@@ -283,5 +287,3 @@ document.addEventListener("DOMContentLoaded", () => {
     loadMatchDetails();
     setupSearch(); 
 });
-
-
